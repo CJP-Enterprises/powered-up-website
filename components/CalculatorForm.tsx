@@ -29,6 +29,53 @@ type FormState = {
   otherFixedLoads: OtherLoad[];
 };
 
+// Numeric appliance fields that get a standard preset VA. Micah just checks the
+// box to include the appliance — the typical nameplate value auto-fills and
+// stays editable (same idea as the circuit counts in the General section).
+// Defaults follow common NEC dwelling example values (Mike Holt / Kopperfield).
+type ApplianceKey =
+  | "rangeVA"
+  | "dishwasherVA"
+  | "disposalVA"
+  | "microwaveVA"
+  | "dryerVA"
+  | "waterHeaterVA"
+  | "hvacHeatingVA"
+  | "hvacCoolingVA"
+  | "evChargerVA"
+  | "hotTubVA"
+  | "poolVA";
+
+type Preset = {
+  key: ApplianceKey;
+  label: string;
+  defaultVA: number;
+  note?: string;
+};
+
+const KITCHEN: Preset[] = [
+  { key: "rangeVA", label: "Electric Range / Oven", defaultVA: 12000, note: "≤12 kW" },
+  { key: "dishwasherVA", label: "Dishwasher", defaultVA: 1200 },
+  { key: "disposalVA", label: "Garbage Disposal", defaultVA: 900 },
+  { key: "microwaveVA", label: "Microwave", defaultVA: 1500 },
+];
+
+const UTILITY: Preset[] = [
+  { key: "dryerVA", label: "Electric Dryer", defaultVA: 5000, note: "min 5000 · 220.54" },
+  { key: "waterHeaterVA", label: "Electric Water Heater", defaultVA: 4500 },
+];
+
+const HVAC: Preset[] = [
+  { key: "hvacHeatingVA", label: "Electric Heat", defaultVA: 10000 },
+  { key: "hvacCoolingVA", label: "Air Conditioning", defaultVA: 3500 },
+];
+
+const EV_POOL: Preset[] = [
+  { key: "evChargerVA", label: "EV Charger (Level 2, 32A)", defaultVA: 7680, note: "×125% continuous" },
+  { key: "hotTubVA", label: "Hot Tub / Spa (48A)", defaultVA: 11520 },
+  { key: "poolVA", label: "Pool Pump", defaultVA: 1500 },
+];
+
 function todayISO(): string {
   const d = new Date();
   const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -142,6 +189,16 @@ export default function CalculatorForm({ loadId }: { loadId: string | null }) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  // Toggle an appliance on/off. On → fill the standard preset VA; off → 0.
+  function toggleAppliance(key: ApplianceKey, defaultVA: number, on: boolean) {
+    setForm((f) => ({ ...f, [key]: on ? defaultVA : 0 }));
+  }
+
+  function setApplianceVA(key: ApplianceKey, value: string) {
+    const n = value === "" ? 0 : Math.max(0, Math.round(Number(value)));
+    setForm((f) => ({ ...f, [key]: Number.isFinite(n) ? n : 0 }));
+  }
+
   function addOther() {
     setForm((f) => ({
       ...f,
@@ -237,6 +294,15 @@ export default function CalculatorForm({ loadId }: { loadId: string | null }) {
     router.refresh();
   }
 
+  const applianceProps = (key: ApplianceKey, defaultVA: number, label: string, note?: string) => ({
+    label,
+    note,
+    defaultVA,
+    va: form[key] as number,
+    onToggle: (on: boolean) => toggleAppliance(key, defaultVA, on),
+    onVA: (v: string) => setApplianceVA(key, v),
+  });
+
   return (
     <main style={{ background: "var(--navy)", minHeight: "80vh", padding: "40px 0 80px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 24px" }}>
@@ -265,6 +331,7 @@ export default function CalculatorForm({ loadId }: { loadId: string | null }) {
             </h1>
             <p style={{ color: "rgba(244,239,230,0.55)", fontSize: 14 }}>
               Runs the Optional (220.82) and Standard (220.42/220.53) methods side-by-side.
+              Check an appliance to add its standard load — adjust the VA if the nameplate differs.
             </p>
           </div>
           <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
@@ -342,84 +409,52 @@ export default function CalculatorForm({ loadId }: { loadId: string | null }) {
                   label="Small Appliance Circuits"
                   value={form.smallApplianceCircuits}
                   onChange={(v) => setNum("smallApplianceCircuits", v)}
-                  unit="circuits"
+                  unit="× 1500 VA"
                 />
                 <NumField
                   label="Laundry Circuits"
                   value={form.laundryCircuits}
                   onChange={(v) => setNum("laundryCircuits", v)}
-                  unit="circuits"
+                  unit="× 1500 VA"
                 />
               </div>
             </section>
 
             <section style={card}>
               <h2 style={sectionTitle}>Kitchen</h2>
-              <div style={grid2}>
-                <NumField label="Range" value={form.rangeVA} onChange={(v) => setNum("rangeVA", v)} />
-                <NumField
-                  label="Dishwasher"
-                  value={form.dishwasherVA}
-                  onChange={(v) => setNum("dishwasherVA", v)}
-                />
-                <NumField
-                  label="Disposal"
-                  value={form.disposalVA}
-                  onChange={(v) => setNum("disposalVA", v)}
-                />
-                <NumField
-                  label="Microwave"
-                  value={form.microwaveVA}
-                  onChange={(v) => setNum("microwaveVA", v)}
-                />
+              <div style={applianceList}>
+                {KITCHEN.map((p) => (
+                  <ApplianceRow key={p.key} {...applianceProps(p.key, p.defaultVA, p.label, p.note)} />
+                ))}
               </div>
             </section>
 
             <section style={card}>
               <h2 style={sectionTitle}>Utility</h2>
-              <div style={grid2}>
-                <NumField label="Dryer" value={form.dryerVA} onChange={(v) => setNum("dryerVA", v)} />
-                <NumField
-                  label="Water Heater"
-                  value={form.waterHeaterVA}
-                  onChange={(v) => setNum("waterHeaterVA", v)}
-                />
+              <div style={applianceList}>
+                {UTILITY.map((p) => (
+                  <ApplianceRow key={p.key} {...applianceProps(p.key, p.defaultVA, p.label, p.note)} />
+                ))}
               </div>
             </section>
 
             <section style={card}>
               <h2 style={sectionTitle}>HVAC</h2>
-              <div style={grid2}>
-                <NumField
-                  label="Heating"
-                  value={form.hvacHeatingVA}
-                  onChange={(v) => setNum("hvacHeatingVA", v)}
-                />
-                <NumField
-                  label="Cooling"
-                  value={form.hvacCoolingVA}
-                  onChange={(v) => setNum("hvacCoolingVA", v)}
-                />
+              <div style={applianceList}>
+                {HVAC.map((p) => (
+                  <ApplianceRow key={p.key} {...applianceProps(p.key, p.defaultVA, p.label, p.note)} />
+                ))}
               </div>
               <p style={hint}>Larger of heating vs. cooling is used (NEC 220.60).</p>
             </section>
 
             <section style={card}>
-              <h2 style={sectionTitle}>EV · Pool · Hot Tub</h2>
-              <div style={grid3}>
-                <NumField
-                  label="EV Charger"
-                  value={form.evChargerVA}
-                  onChange={(v) => setNum("evChargerVA", v)}
-                />
-                <NumField label="Pool" value={form.poolVA} onChange={(v) => setNum("poolVA", v)} />
-                <NumField
-                  label="Hot Tub"
-                  value={form.hotTubVA}
-                  onChange={(v) => setNum("hotTubVA", v)}
-                />
+              <h2 style={sectionTitle}>EV · Pool · Spa</h2>
+              <div style={applianceList}>
+                {EV_POOL.map((p) => (
+                  <ApplianceRow key={p.key} {...applianceProps(p.key, p.defaultVA, p.label, p.note)} />
+                ))}
               </div>
-              <p style={hint}>EV charger is treated as continuous (125% per NEC 625.42).</p>
             </section>
 
             <section style={card}>
@@ -437,7 +472,9 @@ export default function CalculatorForm({ loadId }: { loadId: string | null }) {
                 </button>
               </div>
               {form.otherFixedLoads.length === 0 && (
-                <p style={{ ...hint, marginTop: 0 }}>No additional fixed loads.</p>
+                <p style={{ ...hint, marginTop: 0 }}>
+                  Anything not listed above (well pump, sump pump, etc.).
+                </p>
               )}
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {form.otherFixedLoads.map((l, i) => (
@@ -613,6 +650,90 @@ function NumField({
   );
 }
 
+// One appliance line: check to include (auto-fills the standard VA), edit if needed.
+function ApplianceRow({
+  label,
+  note,
+  defaultVA,
+  va,
+  onToggle,
+  onVA,
+}: {
+  label: string;
+  note?: string;
+  defaultVA: number;
+  va: number;
+  onToggle: (on: boolean) => void;
+  onVA: (v: string) => void;
+}) {
+  const included = va > 0;
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+        padding: "10px 12px",
+        borderRadius: 8,
+        background: included ? "rgba(255,212,0,0.06)" : "var(--navy-deep)",
+        border: included
+          ? "1px solid rgba(255,212,0,0.35)"
+          : "1px solid rgba(244,239,230,0.10)",
+        transition: "background .12s, border-color .12s",
+      }}
+    >
+      <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flex: 1 }}>
+        <input
+          type="checkbox"
+          checked={included}
+          onChange={(e) => onToggle(e.target.checked)}
+          style={{ width: 17, height: 17, accentColor: "var(--yellow)", cursor: "pointer" }}
+        />
+        <span>
+          <span style={{ fontSize: 14, color: "var(--cream)", fontWeight: 600 }}>{label}</span>
+          {note && (
+            <span
+              style={{
+                display: "block",
+                fontFamily: "var(--font-mono)",
+                fontSize: 10.5,
+                color: "rgba(244,239,230,0.4)",
+                marginTop: 1,
+              }}
+            >
+              {note}
+            </span>
+          )}
+        </span>
+      </label>
+
+      {included ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <input
+            type="number"
+            min={0}
+            value={va}
+            onChange={(e) => onVA(e.target.value)}
+            style={{ ...input, width: 96, padding: "8px 10px", textAlign: "right" }}
+          />
+          <span style={{ ...fieldLabel, fontSize: 10 }}>VA</span>
+        </div>
+      ) : (
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 12,
+            color: "rgba(244,239,230,0.35)",
+          }}
+        >
+          {defaultVA.toLocaleString()} VA
+        </span>
+      )}
+    </div>
+  );
+}
+
 function ResultCard({
   label,
   cite,
@@ -748,6 +869,12 @@ const input: React.CSSProperties = {
   fontFamily: "var(--font-body)",
   outline: "none",
   width: "100%",
+};
+
+const applianceList: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
 };
 
 const grid2: React.CSSProperties = {
