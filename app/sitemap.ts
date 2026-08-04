@@ -2,8 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { services } from "@/lib/services";
 import { towns } from "@/lib/towns";
-
-const SITE_URL = "https://www.poweredbymicah.com";
+import { SITE_URL } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
