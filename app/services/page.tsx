@@ -2,7 +2,7 @@ import Link from "next/link";
 import { services } from "@/lib/services";
 
 export const metadata = {
-  title: "Electrical Services | Powered Up LLC | Taunton, MA",
+  title: "Electrical Services in Taunton MA | Panels, EV, Lighting",
   description:
     "Full residential and light commercial electrical services across Taunton, the South Shore, and Greater Boston. Panel upgrades, EV chargers, new construction, remodels, wiring repair, lighting.",
   alternates: { canonical: "https://www.poweredbymicah.com/services" },
