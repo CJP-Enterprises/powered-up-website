@@ -371,18 +371,21 @@ export default function Home() {
     <>
       {/* HERO */}
       <section className="hero">
-        <video
-          className="hero-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/videos/hero-poster.jpg"
-          preload="metadata"
-        >
-          <source src="/videos/hero-loop.mp4" type="video/mp4" media="(min-width: 720px)" />
-          <source src="/videos/hero-loop-mobile.mp4" type="video/mp4" />
-        </video>
+        {/* Was an autoplaying background video: 1.6 MB on mobile, 3.1 MB on
+            desktop. Autoplay downloads regardless of preload="metadata", so
+            the hero could not paint until it arrived — Largest Contentful
+            Paint measured 21.7s on mobile against a 2.5s target. A still of
+            Micah is 54 KB, carries the same message as the headline, and
+            paints immediately. */}
+        <img
+          className="hero-media"
+          src="/photos/micah-hero.webp"
+          alt="Micah Gentile, owner of Powered Up LLC, at a completed Enphase battery installation"
+          width={900}
+          height={1200}
+          fetchPriority="high"
+          decoding="async"
+        />
         <div className="hero-scrim" />
         <div className="hero-glow" />
         <div className="hero-content">

@@ -260,22 +260,24 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
   display: flex;
   align-items: stretch;
   overflow: hidden;
-  /* Fallback if the hero <video> fails to load or is disabled by user preferences. */
+  /* Painted before the hero photo decodes, so the headline never lands on white. */
   background-color: var(--navy-deep);
-  background-image: url('/videos/hero-poster.jpg');
-  background-size: cover;
-  background-position: center 30%;
 }
-/* Homepage hero background video (layers under .hero-scrim / .hero-glow). */
-.hero-video {
+/* Homepage hero photo (layers under .hero-scrim / .hero-glow).
+   object-position is tuned on both axes because the source is portrait
+   (900x1200) and the breakpoints crop on opposite ones: a wide desktop hero
+   overflows vertically, a tall phone hero overflows horizontally. 34% down
+   keeps Micah's face and the battery bank in frame; 58% across holds him right
+   of centre, clear of the heaviest part of the scrim where the headline sits. */
+.hero-media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: 58% 34%;
   z-index: 0;
-  filter: brightness(0.55) saturate(0.85) contrast(1.05);
+  filter: brightness(0.62) saturate(0.9) contrast(1.05);
 }
 /* Image hero background used by service / town landing pages (inline background-image). */
 .hero-bg {

@@ -15,15 +15,12 @@ export const metadata: Metadata = {
   },
 };
 
+// The SPAN smart panel entry was removed with its photo: that image was
+// AI-generated and carried a visible "AI-generated content" watermark, while
+// being presented as Micah's own finished work. Every other item here is a
+// real job photo. If Powered Up does install SPAN panels, this belongs back in
+// with a photograph of one.
 const ITEMS = [
-  {
-    cls: "gallery-item",
-    src: "/photos/work-span-smart-panel.jpg",
-    alt: "Finished SPAN smart panel installation by Powered Up LLC — home electrical panel with per-circuit monitoring and dynamic load management",
-    tag: "Smart Panel",
-    title: "SPAN Smart Panel Install",
-    desc: "Finished SPAN smart panel install. Per-circuit monitoring, dynamic load management, and app-based control — the modern replacement for a traditional breaker panel. One of the few installers of this level of electrical hardware on the South Shore.",
-  },
   {
     cls: "gallery-item",
     src: "/photos/work-tesla-charger-install.jpg",
