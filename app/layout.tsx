@@ -65,7 +65,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
         />
-        <link rel="preload" as="image" href="/videos/hero-poster.jpg" fetchPriority="high" />
+        {/* The hero preload that lived here pointed at the video poster, which
+            was only reachable via a CSS background and so invisible to the
+            preload scanner. The hero is now a real <img fetchPriority="high">
+            in the homepage markup, which the scanner finds on its own — and
+            this tag sat in the root layout, so it was fetching a homepage-only
+            image on every page of the site. */}
       </head>
       <body>
         <GoogleAnalytics />
