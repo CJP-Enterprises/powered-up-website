@@ -271,9 +271,11 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
    on desktop, which is the whole point of the shot; 62% across holds the
    panel right of centre on phones, clear of the heaviest part of the scrim
    where the headline sits.
-   Brightness is near 1 because the exposure lift is baked into the asset —
+   Brightness stays high because the exposure lift is baked into the asset —
    the source is a dark basement, and the scrim needs something to work
-   against or the panel reads as a grey smear. */
+   against or the panel reads as a grey smear. The darkening that keeps the
+   copy legible is done by .hero-scrim, which can be shaped per breakpoint;
+   this filter cannot. */
 .hero-media {
   position: absolute;
   inset: 0;
@@ -282,7 +284,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
   object-fit: cover;
   object-position: 62% 16%;
   z-index: 0;
-  filter: brightness(0.95) saturate(0.95) contrast(1.03);
+  filter: brightness(0.88) saturate(0.95) contrast(1.04);
 }
 /* Image hero background used by service / town landing pages (inline background-image). */
 .hero-bg {
@@ -294,6 +296,15 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
   filter: brightness(0.55) saturate(0.85) contrast(1.05);
   z-index: 0;
 }
+/* The diagonal is weakest at 60% across, which is where the hero photo is
+   brightest. On desktop that is fine: the copy column stops around 50% and
+   sits on the dark end. Below 900px the copy goes full-bleed and lands in
+   that trough, so the trough is lifted rather than the whole image darkened —
+   measured worst-case contrast on a 375px phone went from 2.35:1 on the body
+   copy (WCAG AA wants 4.5) to 5.1:1, with the headline at 8.8:1 and the stat
+   row at 7.9:1. Measured by sampling the lightest pixel under each text box
+   with the copy hidden — worth redoing if the hero photo is ever swapped
+   again, since a brighter photo silently breaks this. */
 .hero-scrim {
   position: absolute;
   inset: 0;
@@ -301,14 +312,29 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
     linear-gradient(105deg,
       rgba(7, 13, 24, 0.96) 0%,
       rgba(7, 13, 24, 0.78) 28%,
-      rgba(7, 13, 24, 0.45) 60%,
-      rgba(7, 13, 24, 0.65) 100%),
+      rgba(7, 13, 24, 0.52) 60%,
+      rgba(7, 13, 24, 0.70) 100%),
     linear-gradient(180deg,
       rgba(15, 26, 46, 0.55) 0%,
       transparent 18%,
       transparent 70%,
       var(--navy) 100%);
   z-index: 1;
+}
+@media (max-width: 900px) {
+  .hero-scrim {
+    background:
+      linear-gradient(105deg,
+        rgba(7, 13, 24, 0.95) 0%,
+        rgba(7, 13, 24, 0.86) 28%,
+        rgba(7, 13, 24, 0.70) 60%,
+        rgba(7, 13, 24, 0.76) 100%),
+      linear-gradient(180deg,
+        rgba(15, 26, 46, 0.55) 0%,
+        transparent 18%,
+        transparent 70%,
+        var(--navy) 100%);
+  }
 }
 .hero-glow {
   position: absolute;
