@@ -264,20 +264,25 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
   background-color: var(--navy-deep);
 }
 /* Homepage hero photo (layers under .hero-scrim / .hero-glow).
-   object-position is tuned on both axes because the source is portrait
-   (900x1200) and the breakpoints crop on opposite ones: a wide desktop hero
-   overflows vertically, a tall phone hero overflows horizontally. 34% down
-   keeps Micah's face and the battery bank in frame; 58% across holds him right
-   of centre, clear of the heaviest part of the scrim where the headline sits. */
+   Both axes are set because the source is portrait (820x1093) and the two
+   breakpoints crop on opposite ones — a wide desktop hero overflows
+   vertically and ignores the X value, a tall phone hero overflows
+   horizontally and ignores the Y. 16% down keeps the SPAN wordmark in frame
+   on desktop, which is the whole point of the shot; 62% across holds the
+   panel right of centre on phones, clear of the heaviest part of the scrim
+   where the headline sits.
+   Brightness is near 1 because the exposure lift is baked into the asset —
+   the source is a dark basement, and the scrim needs something to work
+   against or the panel reads as a grey smear. */
 .hero-media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 58% 34%;
+  object-position: 62% 16%;
   z-index: 0;
-  filter: brightness(0.62) saturate(0.9) contrast(1.05);
+  filter: brightness(0.95) saturate(0.95) contrast(1.03);
 }
 /* Image hero background used by service / town landing pages (inline background-image). */
 .hero-bg {

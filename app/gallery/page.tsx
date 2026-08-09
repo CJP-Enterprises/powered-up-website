@@ -15,11 +15,10 @@ export const metadata: Metadata = {
   },
 };
 
-// The SPAN smart panel entry was removed with its photo: that image was
-// AI-generated and carried a visible "AI-generated content" watermark, while
-// being presented as Micah's own finished work. Every other item here is a
-// real job photo. If Powered Up does install SPAN panels, this belongs back in
-// with a photograph of one.
+// Every item here is a real job photo. The previous first entry was an
+// AI-generated SPAN panel carrying a visible "AI-generated content" watermark,
+// presented as Micah's own finished work; it was a fabricated cover-on version
+// of the genuine SPAN install further down this list.
 const ITEMS = [
   {
     cls: "gallery-item",
@@ -69,13 +68,17 @@ const ITEMS = [
     title: "Powered Up LLC · Across the South Shore",
     desc: "If you see the van around Taunton, Brockton, Raynham, or Plymouth — that's us. Residential and commercial · service upgrades · rewires · new construction · car chargers.",
   },
+  // This photo is a SPAN smart panel, but the copy on it described a meter
+  // base, conduit run and disconnect — the caption belonged to a different
+  // job. The SPAN description that was attached to the deleted AI image was
+  // accurate; it just had a fabricated photo under it. Reunited here.
   {
     cls: "gallery-item",
     src: "/photos/work-finished-service.jpg",
-    alt: "Finished electrical service install by Powered Up LLC",
-    tag: "Service Install",
-    title: "Finished Service Install",
-    desc: "Clean finished electrical service work. New meter base, conduit run, and disconnect — permit pulled, inspection coordinated.",
+    alt: "SPAN smart panel installed by Powered Up LLC, backlit and open to show the breaker layout",
+    tag: "Smart Panel",
+    title: "SPAN Smart Panel Install",
+    desc: "Finished SPAN smart panel install. Per-circuit monitoring, dynamic load management, and app-based control — the modern replacement for a traditional breaker panel. One of the few installers of this level of electrical hardware on the South Shore.",
   },
   {
     cls: "gallery-item",

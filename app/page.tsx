@@ -379,10 +379,10 @@ export default function Home() {
             paints immediately. */}
         <img
           className="hero-media"
-          src="/photos/micah-hero.webp"
-          alt="Micah Gentile, owner of Powered Up LLC, at a completed Enphase battery installation"
-          width={900}
-          height={1200}
+          src="/photos/span-panel-hero.webp"
+          alt="A SPAN smart electrical panel installed by Powered Up LLC, backlit and open to show the breaker layout"
+          width={820}
+          height={1093}
           fetchPriority="high"
           decoding="async"
         />
