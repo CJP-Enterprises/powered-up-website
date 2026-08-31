@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { GA_EVENT, trackEvent } from "@/lib/analytics";
 
 const ArrowIcon = () => (
   <svg
@@ -100,6 +101,13 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+      });
+
+      // GA4 key event. Inside the try, so a failed send is not counted as a
+      // lead — nothing reached the inbox in that case.
+      trackEvent(GA_EVENT.generateLead, {
+        form_name: "qualify",
+        form_destination: "/api/quote",
       });
     } catch (e) {
       // Don't block the calendar booking even if the email send fails.
