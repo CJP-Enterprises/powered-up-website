@@ -38,3 +38,17 @@ export const GA_EVENT = {
   /** Any `tel:` link clicked, anywhere on the site. */
   clickToCall: "click_to_call",
 } as const;
+
+export type LeadMethod = "phone_call" | "text_message" | "form" | "email";
+
+/**
+ * Fires GA4's recommended `generate_lead` event — the ONLY event name that
+ * populates GA4's Lead acquisition report. `method` is what splits that report
+ * by channel, so it must always be present.
+ */
+export function trackLead(
+  method: LeadMethod,
+  params: Record<string, unknown> = {},
+): void {
+  trackEvent(GA_EVENT.generateLead, { method, ...params });
+}

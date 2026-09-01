@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GA_EVENT, trackEvent } from "@/lib/analytics";
+import { trackLead } from "@/lib/analytics";
 
 const ArrowIcon = () => (
   <svg
@@ -105,7 +105,7 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
 
       // GA4 key event. Inside the try, so a failed send is not counted as a
       // lead — nothing reached the inbox in that case.
-      trackEvent(GA_EVENT.generateLead, {
+      trackLead("form", {
         form_name: "qualify",
         form_destination: "/api/quote",
       });

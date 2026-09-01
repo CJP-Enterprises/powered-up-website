@@ -4,7 +4,7 @@ import TopBar from "@/components/TopBar";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import { PhoneClickTracker } from "@/components/PhoneClickTracker";
+import LeadTracking from "@/components/LeadTracking";
 
 const SITE_URL = "https://www.poweredbymicah.com";
 
@@ -74,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             image on every page of the site. */}
       </head>
       <body>
-        <PhoneClickTracker />
+        <LeadTracking />
         <GoogleAnalytics />
         <TopBar />
         <Nav />
