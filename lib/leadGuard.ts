@@ -44,7 +44,7 @@
 
 import { messageIsEmpty, messageIsTooShort, messageWords } from "./messageRules";
 
-export const LEAD_GUARD_VERSION = "1.0.0";
+export const LEAD_GUARD_VERSION = "1.1.0";
 
 /* ------------------------------------------------------------------
    BANNED-PHRASE LIST  —  edit upstream, then re-copy to every client.
@@ -475,27 +475,26 @@ async function quarantine(
 }
 
 /**
- * The one call a route makes. Returns null when the submission is clean and
- * the route should carry on; otherwise logs it, mails a quarantine copy, and
- * returns the Response to send back immediately.
+ * Judge, log and quarantine — returning the REASON rather than a Response.
+ * Use this from a Server Action or anywhere else that does not hand back a
+ * Response; route handlers want screenLead() below instead.
  *
- * `successBody` MUST mirror what the route returns on a genuine success, so a
- * rare false positive sees the same confirmation screen a real lead does. Do
- * NOT include a marker the client reads to fire a conversion event: spam must
- * never be counted as a lead in GA4.
+ * Answer a caught submission with whatever your normal success looks like. The
+ * caller decides what that is here, but the rule is the same everywhere: a bot
+ * must see a success so it stops retrying, and the success must not carry a
+ * marker the client reads to fire a conversion.
  */
-export async function screenLead(
+export async function inspectAndLogLead(
   fields: LeadFields,
-  config: GuardConfig = {},
-  successBody: Record<string, unknown> = { ok: true }
-): Promise<Response | null> {
+  config: GuardConfig = {}
+): Promise<SpamReason | null> {
   const reason = inspectLead(fields, config);
   if (!reason) return null;
 
   const details = {
     name:
-      fields.name ??
-      [fields.firstName, fields.lastName].filter(Boolean).join(" ") ??
+      fields.name ||
+      [fields.firstName, fields.lastName].filter(Boolean).join(" ") ||
       "(none)",
     email: fields.email || "(none)",
     phone: fields.phone || "(not provided)",
@@ -509,6 +508,25 @@ export async function screenLead(
     JSON.stringify(details)
   );
   await quarantine(reason, details);
+  return reason;
+}
 
+/**
+ * The one call a route handler makes. Returns null when the submission is clean
+ * and the route should carry on; otherwise logs it, mails a quarantine copy,
+ * and returns the Response to send back immediately.
+ *
+ * `successBody` MUST mirror what the route returns on a genuine success, so a
+ * rare false positive sees the same confirmation screen a real lead does. Do
+ * NOT include a marker the client reads to fire a conversion event: spam must
+ * never be counted as a lead in GA4.
+ */
+export async function screenLead(
+  fields: LeadFields,
+  config: GuardConfig = {},
+  successBody: Record<string, unknown> = { ok: true }
+): Promise<Response | null> {
+  const reason = await inspectAndLogLead(fields, config);
+  if (!reason) return null;
   return Response.json(successBody, { status: 200 });
 }
