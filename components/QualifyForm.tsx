@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackLead } from "@/lib/analytics";
 
 const ArrowIcon = () => (
@@ -78,6 +78,15 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
     goToStep(2);
   }
 
+  // When the form became interactive for this visitor. Sent with the
+  // submission so the server can reject bot posts completed unrealistically
+  // fast. Stays 0 until the effect runs, and the server treats 0 as "no
+  // signal" rather than as a failure, so nothing is blocked by it.
+  const renderedAt = useRef(0);
+  useEffect(() => {
+    renderedAt.current = Date.now();
+  }, []);
+
   async function submit() {
     setErr2("");
     if (!service.trim() || !timeline.trim()) {
@@ -93,6 +102,8 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
       service: service.trim(),
       notes: "Timeline: " + timeline + "\n\n" + notes.trim(),
       website,
+      // Anti-bot timing signal, stamped when the form became interactive.
+      renderedAt: renderedAt.current,
     };
 
     setSending(true);

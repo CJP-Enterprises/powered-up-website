@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { screenLead } from "@/lib/leadGuard";
 
 // Run on the Node.js runtime (Resend SDK + in-memory rate limiting).
 export const runtime = "nodejs";
@@ -130,10 +131,6 @@ export async function POST(req: Request) {
     const raw = await req.text();
     const body = raw ? JSON.parse(raw) : {};
 
-    if (body.website && String(body.website).trim() !== "") {
-      return Response.json({ ok: true });
-    }
-
     const name = String(body.name || "").trim();
     const phone = String(body.phone || "").trim();
     const email = String(body.email || "").trim();
@@ -150,6 +147,25 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    // Layered spam filtering (honeypot, timing, gibberish name, keyboard mash,
+    // SEO/marketing phrases). Returns a normal-looking 200 without sending, so
+    // bots stop retrying. See lib/leadGuard.ts. The notes box is optional on
+    // this form, so requireMessage stays off: a one-word answer is a real lead.
+    const blocked = await screenLead(
+      {
+        name,
+        email,
+        phone,
+        message: notes,
+        honeypot: body.website,
+        renderedAt: body.renderedAt,
+        extra: { service, town },
+      },
+      { requireMessage: false },
+      { ok: true },
+    );
+    if (blocked) return blocked;
 
     const ip = getClientIp(req);
     if (!checkRateLimit(ip)) {
