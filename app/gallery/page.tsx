@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Recent Work | Powered Up LLC | Taunton, MA Electrician",
+  title: { absolute: "Recent Work | Powered Up LLC | Taunton, MA Electrician" },
   description:
     "Recent electrical work by Powered Up LLC — service upgrades, solar systems, panel installations across Taunton and the South Shore. Owner-operated, licensed in Massachusetts.",
   alternates: { canonical: "/gallery" },

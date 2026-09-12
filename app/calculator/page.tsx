@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/calc-auth";
 import CalculatorForm from "@/components/CalculatorForm";
 
-export const metadata = { title: "Load Calculator | Powered Up LLC" };
+export const metadata = { title: { absolute: "Load Calculator | Powered Up LLC" } };
 
 export default async function CalculatorPage({
   searchParams,

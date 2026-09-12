@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/calc-auth";
 import CalcLoginForm from "@/components/CalcLoginForm";
 
-export const metadata = { title: "Load Calculator Access | Powered Up LLC" };
+export const metadata = { title: { absolute: "Load Calculator Access | Powered Up LLC" } };
 
 export default async function CalcLoginPage() {
   const session = await getSession();

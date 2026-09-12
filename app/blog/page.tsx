@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getAllPosts, formatDate } from "@/lib/blog";
 
 export const metadata: Metadata = {
-  title: "Blog | Powered Up LLC",
+  title: { absolute: "Blog | Powered Up LLC" },
   description:
     "Electrical tips, project notes, and guidance from Powered Up LLC — a licensed, owner-operated electrician serving Taunton and the South Shore.",
   alternates: { canonical: "/blog" },
