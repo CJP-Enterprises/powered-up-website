@@ -4,7 +4,7 @@ import { towns } from "@/lib/towns";
 const data = towns.find((t) => t.slug === "brockton")!;
 
 export const metadata = {
-  title: data.metaTitle,
+  title: { absolute: data.metaTitle },
   description: data.metaDescription,
   alternates: { canonical: "https://www.poweredbymicah.com/brockton" },
 };

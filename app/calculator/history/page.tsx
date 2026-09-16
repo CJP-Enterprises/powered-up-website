@@ -3,7 +3,7 @@ import Link from "next/link";
 import { sql } from "@vercel/postgres";
 import { getSession } from "@/lib/calc-auth";
 
-export const metadata = { title: "Job History | Powered Up LLC" };
+export const metadata = { title: { absolute: "Job History | Powered Up LLC" } };
 export const dynamic = "force-dynamic";
 
 type Row = {
