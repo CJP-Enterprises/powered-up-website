@@ -20,6 +20,56 @@ export const metadata: Metadata = {
 // presented as Micah's own finished work; it was a fabricated cover-on version
 // of the genuine SPAN install further down this list.
 const ITEMS = [
+  // Underground service job, Sept 21-23 2026. Six photos from Micah, shown in
+  // the order the work happened: trench, conduit, posts, wire pull, pedestal.
+  {
+    cls: "gallery-item",
+    src: "/photos/work-underground-meter-pedestal.jpg",
+    alt: "Finished freestanding meter pedestal by Powered Up LLC — meter socket on a post-mounted board with underground conduit to grade",
+    tag: "Underground Service · Finished",
+    title: "Freestanding Meter Pedestal",
+    desc: "Day three. Meter socket and junction box mounted on a post-set pedestal, with the underground conduit runs stubbed up to grade. Clean, plumb, and ready for the utility.",
+  },
+  {
+    cls: "gallery-item",
+    src: "/photos/work-underground-pedestal-wire-pull.jpg",
+    alt: "Underground service conduits stubbed up between two pressure-treated posts with feeder conductors pulled through",
+    tag: "Underground Service · Day 2",
+    title: "Posts Set, Feeders Pulled",
+    desc: "Pressure-treated posts set and the conduits stubbed up between them. Feeder conductors pulled through the underground run before the pedestal board goes on.",
+  },
+  {
+    cls: "gallery-item",
+    src: "/photos/work-underground-conduit-house.jpg",
+    alt: "Three PVC conduit runs strapped to the side of a house and swept down into an underground trench",
+    tag: "Underground Service · Day 1",
+    title: "Conduit Up the House",
+    desc: "Three conduit runs strapped to the siding and swept into the trench at the foundation, so nothing shows above grade but clean pipe.",
+  },
+  {
+    cls: "gallery-item",
+    src: "/photos/work-underground-trench-conduit.jpg",
+    alt: "Three grey PVC conduits laid in an open trench beside a landscaped bed",
+    tag: "Underground Service · Day 1",
+    title: "Conduit in the Trench",
+    desc: "Conduits laid in the open trench, routed under an existing shrub so the planting stays put.",
+  },
+  {
+    cls: "gallery-item",
+    src: "/photos/work-underground-trench-excavator.jpg",
+    alt: "Mini excavator trenching for underground electrical conduit through a landscaped yard with boulders moved aside",
+    tag: "Underground Service · Day 1",
+    title: "Trenching the Run",
+    desc: "Mini excavator on site for the trench. Boulders lifted out and set aside, shrubs kept, conduit laid the same day.",
+  },
+  {
+    cls: "gallery-item",
+    src: "/photos/work-underground-pedestal-back.jpg",
+    alt: "Back of the meter pedestal board with two conduits strapped up, Powered Up LLC van in the driveway",
+    tag: "Underground Service · Day 3",
+    title: "Pedestal Board, Van in the Drive",
+    desc: "The back side of the pedestal with the conduits strapped up the board. That is the Powered Up van in the driveway, which means Micah is the one on the job.",
+  },
   {
     cls: "gallery-item",
     src: "/photos/work-tesla-charger-install.jpg",
