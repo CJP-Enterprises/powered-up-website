@@ -53,6 +53,8 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
   );
   const [timeline, setTimeline] = useState("");
   const [notes, setNotes] = useState("");
+  // Optional SMS opt-in: unticked by default, never validated.
+  const [smsConsent, setSmsConsent] = useState(false);
 
   const [err1, setErr1] = useState("");
   const [err2, setErr2] = useState("");
@@ -102,6 +104,8 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
       service: service.trim(),
       notes: "Timeline: " + timeline + "\n\n" + notes.trim(),
       website,
+      // The only record that this person asked for texts; printed in the owner email.
+      sms_consent: smsConsent,
       // Anti-bot timing signal, stamped when the form became interactive.
       renderedAt: renderedAt.current,
     };
@@ -269,6 +273,21 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
             onChange={(e) => setNotes(e.target.value)}
           />
         </div>
+        <label className="qualify-consent" htmlFor="qf-sms">
+          <input
+            type="checkbox"
+            id="qf-sms"
+            name="sms_consent"
+            checked={smsConsent}
+            onChange={(e) => setSmsConsent(e.target.checked)}
+          />
+          <span>
+            <strong>Optional.</strong> Text me about this request. You&apos;ll get texts from Powered
+            Up LLC about your quote and scheduling. Message frequency varies, and message and data
+            rates may apply. Reply HELP for help or STOP to cancel at any time. Consent is not a
+            condition of any purchase.
+          </span>
+        </label>
         <div className="qualify-actions">
           <button
             type="button"
@@ -294,6 +313,10 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
             )}
           </button>
         </div>
+        <p className="qualify-legal">
+          By submitting, you agree we may contact you by phone or email about your request. See our{" "}
+          <a href="/privacy">privacy policy</a> and <a href="/terms">terms</a>.
+        </p>
         <div className="qualify-error" id="qerr-2">
           {err2}
         </div>

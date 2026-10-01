@@ -32,7 +32,7 @@ const LINKS: NavLink[] = [
   { href: "/#area", label: "Service Area" },
   { href: "/#reviews", label: "Reviews" },
   { href: "/#faq", label: "FAQ" },
-  { href: "/#book", label: "Book a Call" },
+  { href: "/contact", label: "Book a Call" },
 ];
 
 export default function Nav() {

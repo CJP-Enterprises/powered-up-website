@@ -35,6 +35,7 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Contact</h4>
             <ul>
+              <li><Link href="/contact">Book a Call</Link></li>
               <li><a href="tel:+15086225919">(508) 622-5919</a></li>
               <li><a href="mailto:micah.gentile@poweredbymicah.com">Email Micah</a></li>
               <li>Mon–Sat · 7am–7pm</li>
@@ -42,7 +43,10 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2024 Powered Up LLC · All Rights Reserved</span>
+          <span>
+            © 2024 Powered Up LLC · All Rights Reserved · <Link href="/privacy">Privacy</Link> ·{" "}
+            <Link href="/terms">Terms</Link>
+          </span>
           <span>Built with care in Massachusetts</span>
         </div>
       </div>

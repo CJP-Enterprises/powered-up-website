@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* cjp-visual:start */
+@import "../lib/cjp-visual/motion/cjp-motion.css";
+@import "../lib/cjp-visual/skins/electrical.css";
+/* cjp-visual:end */
 @plugin "@tailwindcss/typography";
 
 /* ===== BRAND DESIGN TOKENS (exposed to Tailwind utilities) ===== */
@@ -460,7 +464,6 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
 
 /* Fade in animations */
 .hero-content > * {
-  opacity: 0;
   transform: translateY(20px);
   animation: heroIn 0.8s ease-out forwards;
 }
@@ -470,7 +473,10 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; color:
 .hero-content > *:nth-child(4) { animation-delay: 0.46s; }
 .hero-content > *:nth-child(5) { animation-delay: 0.58s; }
 @keyframes heroIn {
-  to { opacity: 1; transform: translateY(0); }
+  to { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-content > * { transform: none; animation: none; }
 }
 
 /* ===== MARQUEE TRUST STRIP ===== */
@@ -1139,6 +1145,31 @@ section { padding: 110px 0; }
   background: var(--navy-deep);
   color: var(--cream);
 }
+.qualify-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(15, 26, 46, 0.7);
+  cursor: pointer;
+}
+.qualify-consent input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--navy-deep);
+}
+.qualify-consent strong { color: var(--navy-deep); }
+.qualify-legal {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(15, 26, 46, 0.6);
+}
+.qualify-legal a { color: inherit; text-decoration: underline; }
 .qualify-error {
   color: #c0392b;
   font-size: 13px;
@@ -1235,16 +1266,6 @@ footer {
   text-transform: uppercase;
 }
 
-/* ===== REVEAL ON SCROLL ===== */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-.reveal.in {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 /* ===== GALLERY PAGE ===== */
 .page-header { padding: 100px 0 60px; background: var(--navy-deep); position: relative; border-bottom: 1px solid var(--line); }

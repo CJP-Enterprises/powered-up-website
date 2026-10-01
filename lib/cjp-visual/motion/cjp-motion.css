@@ -1,0 +1,190 @@
+/* CJP_VISUAL_VERSION = 1.5.3 */
+/* ---------------------------------------------------------------------------
+   cjp-motion.css: the one motion stack. CSS first; GSAP is the only JS
+   motion library and loads through LazyMotionSection.
+
+   Import AFTER `@import "tailwindcss";` in app/globals.css (add.mjs writes
+   the import between the cjp-visual:start / cjp-visual:end markers). A trade
+   skin imported after this file may re-tune the --dur-* tokens.
+
+   Tailwind v4: use `duration-(--dur-2)` / `ease-(--ease-out)`, never
+   brackets (`duration-[--dur-2]` compiles to invalid CSS and fails silently).
+
+   Never on: the LCP element, the phone number, CTAs (only .press), body text,
+   form fields, layout properties.
+
+   Gallery: :root[data-cjp-motion="reduce"] mirrors prefers-reduced-motion so
+   the reduced-motion toggle works inside iframes. Harmless in client repos.
+--------------------------------------------------------------------------- */
+
+@theme static {
+  --dur-1: 140ms;
+  --dur-2: 260ms;
+  --dur-3: 560ms;
+  --dur-4: 800ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* Spring, bounce 0.15 (damping ratio 0.85), sampled into linear(). Motion only, never opacity. */
+  --ease-spring: linear(
+    0, 0.0748 5%, 0.2335 10%, 0.411 15%, 0.5737 20%, 0.7077 25%, 0.8103 30%,
+    0.8843 35%, 0.9348 40%, 0.9675 45%, 0.9873 50%, 0.9985 55%, 1.0039 60%,
+    1.006 65%, 1.0062 70%, 1.0055 75%, 1.0044 80%, 1.0033 85%, 1.0023 90%,
+    1.0016 95%, 1
+  );
+  --reveal-distance: 16px;
+  --hover-out: 450ms;
+}
+
+
+@layer utilities {
+  /* .reveal: scroll-linked rise (Tier 0, zero JS). TRANSFORM ONLY: content is
+     never hidden. Unsupported timeline, full-page captures, crawlers and
+     reduced motion all see it in place. From ~/stl-air-pros, at 16px. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: cjp-reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+
+      /* .wipe-in: put it on the INNER frame of a photo. Clip only, never on
+         the LCP image. */
+      .wipe-in {
+        animation: cjp-wipe linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+      }
+
+      /* .drift: parallax inside an overflow-hidden frame. */
+      .drift {
+        animation: cjp-drift linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+        will-change: transform;
+      }
+    }
+  }
+
+  /* .press: the ONLY motion allowed on CTAs and phone links. */
+  .press {
+    transition: transform 150ms var(--ease-out);
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  /* Hover utilities: real pointers only; in fast (--dur-1), out slow (450ms). */
+  .hover-lift,
+  .hover-zoom > img,
+  .hover-zoom > picture > img {
+    transition-property: transform;
+    transition-duration: var(--hover-out);
+    transition-timing-function: var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hover-lift:hover {
+      transform: translate3d(0, -3px, 0);
+      transition-duration: var(--dur-1);
+    }
+    .hover-zoom:hover > img,
+    .hover-zoom:hover > picture > img {
+      transform: scale(1.04);
+      transition-duration: var(--dur-3);
+    }
+  }
+}
+
+@keyframes cjp-reveal {
+  from {
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes cjp-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes cjp-drift {
+  from {
+    transform: translate3d(0, -6%, 0) scale(1.12);
+  }
+  to {
+    transform: translate3d(0, 6%, 0) scale(1.12);
+  }
+}
+
+/* Drawers and sheets: native <dialog class="cjp-drawer"> + @starting-style,
+   no JS animation. transform + opacity only. */
+dialog.cjp-drawer {
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    opacity var(--dur-2) var(--ease-out),
+    overlay var(--dur-2) allow-discrete,
+    display var(--dur-2) allow-discrete;
+  transform: translate3d(100%, 0, 0);
+  opacity: 1;
+}
+dialog.cjp-drawer[open] {
+  transform: none;
+}
+@starting-style {
+  dialog.cjp-drawer[open] {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+dialog.cjp-drawer::backdrop {
+  background: rgb(0 0 0 / 0);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    overlay var(--dur-2) allow-discrete,
+    display var(--dur-2) allow-discrete;
+}
+dialog.cjp-drawer[open]::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
+@starting-style {
+  dialog.cjp-drawer[open]::backdrop {
+    background: rgb(0 0 0 / 0);
+  }
+}
+
+/* Reduced motion: keep opacity, kill every transform, clip and parallax. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .wipe-in,
+  .drift {
+    animation: none !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  .press:active,
+  .hover-lift:hover,
+  .hover-zoom:hover > img,
+  .hover-zoom:hover > picture > img {
+    transform: none !important;
+  }
+  dialog.cjp-drawer,
+  dialog.cjp-drawer[open] {
+    transform: none;
+    transition-property: opacity, overlay, display;
+  }
+}
+:root[data-cjp-motion="reduce"] .reveal,
+:root[data-cjp-motion="reduce"] .wipe-in,
+:root[data-cjp-motion="reduce"] .drift {
+  animation: none !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+:root[data-cjp-motion="reduce"] .press:active,
+:root[data-cjp-motion="reduce"] .hover-lift:hover,
+:root[data-cjp-motion="reduce"] .hover-zoom:hover > img {
+  transform: none !important;
+}

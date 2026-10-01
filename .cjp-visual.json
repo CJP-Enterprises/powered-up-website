@@ -1,0 +1,31 @@
+{
+  "version": "1.5.3",
+  "components": [
+    "scroll-reveal"
+  ],
+  "preset": "electrical",
+  "experimental": false,
+  "updatedAt": "2026-10-01T17:43:32.891Z",
+  "files": {
+    "components/cjp-visual/ScrollReveal/Counter.tsx": "696055496e4941637e3936be48691e1390e82d708393a6423c7f458ba116bee4",
+    "components/cjp-visual/ScrollReveal/Reveal.tsx": "db3c6352d51f36aed0d14c4dd2ad5a69b3ea4877a3b7cd9e3eab00f397c3a8ea",
+    "components/cjp-visual/ScrollReveal/ScrollReveal.tsx": "1bfbafcea6022b1b85a507eb833f0b147bba7a7d58bac95536062515952f8f9f",
+    "components/cjp-visual/ScrollReveal/Wipe.tsx": "4fda013c523fe47ad926fc90e0e7d0b8c70e5508f4b14a09e574956d363af6e4",
+    "components/cjp-visual/ScrollReveal/presets/electrical.ts": "94c978e03ee1589e43f60ea4da8d48b492c967316dce122f9114d7813797a13a",
+    "components/cjp-visual/ScrollReveal/presets/types.ts": "3f3f87b3e3103a695127876b2683bdfdb4e37b6876a079284a940f7cd7fd5ff0",
+    "components/cjp-visual/ScrollReveal/scroll-reveal.css": "7260190068e03dfe00333b0c6b6cdf1bf0ff875425f98a68da9fcac27cc12007",
+    "lib/cjp-visual/motion/cjp-motion.css": "25aad13941bfeab78b471efaab3ef4ce432e74e4890705aaecaadbddf0053aeb",
+    "lib/cjp-visual/skins/electrical.css": "9f7b8812f1b7fe9c06c6beb9948caac1712a449937e1bc5dcde36206f3222ca9"
+  },
+  "sources": {
+    "components/cjp-visual/ScrollReveal/Counter.tsx": "registry/motion/ScrollReveal/Counter.tsx",
+    "components/cjp-visual/ScrollReveal/Reveal.tsx": "registry/motion/ScrollReveal/Reveal.tsx",
+    "components/cjp-visual/ScrollReveal/ScrollReveal.tsx": "registry/motion/ScrollReveal/ScrollReveal.tsx",
+    "components/cjp-visual/ScrollReveal/Wipe.tsx": "registry/motion/ScrollReveal/Wipe.tsx",
+    "components/cjp-visual/ScrollReveal/presets/electrical.ts": "registry/motion/ScrollReveal/presets/electrical.ts",
+    "components/cjp-visual/ScrollReveal/presets/types.ts": "registry/motion/ScrollReveal/presets/types.ts",
+    "components/cjp-visual/ScrollReveal/scroll-reveal.css": "registry/motion/ScrollReveal/scroll-reveal.css",
+    "lib/cjp-visual/motion/cjp-motion.css": "registry/_shared/motion/cjp-motion.css",
+    "lib/cjp-visual/skins/electrical.css": "registry/_shared/skins/electrical.css"
+  }
+}
