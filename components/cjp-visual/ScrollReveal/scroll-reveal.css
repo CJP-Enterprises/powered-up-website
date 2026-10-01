@@ -1,0 +1,202 @@
+/* CJP_VISUAL_VERSION = 1.5.3 */
+/* ---------------------------------------------------------------------------
+   ScrollReveal: the few rules cjp-motion.css does not already carry.
+
+   1. Preset tuning of the zero-JS classes (.wipe-in direction + photo settle,
+      .drift amount). Same guards as cjp-motion.css: nothing here runs unless
+      animation-timeline: view() is supported AND motion is allowed, so every
+      other browser, crawler and full-page capture sees the finished frame.
+   2. The IntersectionObserver path (<Reveal>, <Wipe>). Server HTML carries no
+      data-reveal / data-wipe attribute, so it is the visible, finished state.
+      The components only set "out" after mount, only on elements that start
+      BELOW the first viewport, and flip to "in" once.
+
+   Imported by ScrollReveal.tsx, Reveal.tsx and Wipe.tsx (Next.js App Router
+   allows a global stylesheet import from any component; it is bundled once).
+   Plain CSS on purpose: no @theme, no @apply, so it works with or without the
+   Tailwind pipeline. Compositor-only properties: transform, opacity, clip-path.
+--------------------------------------------------------------------------- */
+
+/* ---- 1. Zero-JS path: preset tuning --------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .wipe-in[data-sr-from="top"] {
+      animation-name: cjp-sr-wipe-top;
+    }
+    .wipe-in[data-sr-from="bottom"] {
+      animation-name: cjp-sr-wipe-bottom;
+    }
+    .wipe-in[data-sr-from="left"] {
+      animation-name: cjp-sr-wipe-left;
+    }
+    .wipe-in[data-sr-from="right"] {
+      animation-name: cjp-sr-wipe-right;
+    }
+    /* No data-sr-from: the shared cjp-wipe keyframe, inset(0 0 100% 0) ->
+       inset(0), which opens from the top edge (same as "top"). */
+
+    /* The photo inside a wiping frame settles from a slight scale to 1 over
+       the same range, so the wipe reads as a lens, not a curtain. */
+    .wipe-in[data-sr-settle] > * {
+      animation: cjp-sr-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+
+    .drift[data-sr-drift] {
+      animation-name: cjp-sr-drift;
+    }
+  }
+}
+
+@keyframes cjp-sr-wipe-top {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes cjp-sr-wipe-bottom {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes cjp-sr-wipe-left {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes cjp-sr-wipe-right {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes cjp-sr-settle {
+  from {
+    transform: scale(var(--sr-settle, 1.05));
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes cjp-sr-drift {
+  from {
+    transform: translate3d(0, calc(var(--sr-drift, 6%) * -1), 0) scale(var(--sr-drift-scale, 1.12));
+  }
+  to {
+    transform: translate3d(0, var(--sr-drift, 6%), 0) scale(var(--sr-drift-scale, 1.12));
+  }
+}
+
+/* ---- 2. IO path: <Reveal> --------------------------------------------------- */
+[data-reveal="out"] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance, 16px), 0);
+}
+[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur-3, 560ms) var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) var(--reveal-delay, 0ms),
+    transform var(--dur-3, 560ms) var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) var(--reveal-delay, 0ms);
+}
+
+/* ---- 2. IO path: <Wipe> ----------------------------------------------------
+   Outer node (observed, never clipped) > [data-wipe] (clipped) >
+   [data-sr-settle] (scaled). Clip-path collapses the intersection rect of the
+   clipped node, so the observer must never watch it. */
+[data-wipe="out"] {
+  clip-path: inset(100% 0 0 0);
+}
+[data-wipe="out"][data-sr-from="top"] {
+  clip-path: inset(0 0 100% 0);
+}
+[data-wipe="out"][data-sr-from="left"] {
+  clip-path: inset(0 100% 0 0);
+}
+[data-wipe="out"][data-sr-from="right"] {
+  clip-path: inset(0 0 0 100%);
+}
+[data-wipe="in"] {
+  clip-path: inset(0);
+  transition: clip-path var(--sr-wipe-ms, 640ms) var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) var(--reveal-delay, 0ms);
+}
+[data-wipe] > [data-sr-settle] {
+  height: 100%;
+}
+[data-wipe="out"] > [data-sr-settle] {
+  transform: scale(var(--sr-settle, 1.05));
+}
+[data-wipe="in"] > [data-sr-settle] {
+  transform: none;
+  /* A touch longer than the clip so the photo is still settling as the frame
+     finishes opening. */
+  transition: transform calc(var(--sr-wipe-ms, 640ms) * 1.35) var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1))
+    var(--reveal-delay, 0ms);
+}
+
+/* ---- Reduced motion: opacity only ------------------------------------------
+   Rise, clip and scale are dropped; the IO path keeps a plain fade so the
+   page still acknowledges the scroll. The zero-JS path is already static via
+   cjp-motion.css. :root[data-cjp-motion="reduce"] mirrors it in the gallery. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-wipe] > [data-sr-settle] {
+    transform: none !important;
+  }
+  [data-wipe] {
+    clip-path: none !important;
+  }
+  [data-wipe="out"] {
+    opacity: 0;
+  }
+  [data-reveal="in"],
+  [data-wipe="in"] {
+    opacity: 1;
+    transition: opacity var(--dur-3, 560ms) linear var(--reveal-delay, 0ms) !important;
+  }
+  .wipe-in[data-sr-settle] > * {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+:root[data-cjp-motion="reduce"] [data-reveal],
+:root[data-cjp-motion="reduce"] [data-wipe] > [data-sr-settle] {
+  transform: none !important;
+}
+:root[data-cjp-motion="reduce"] [data-wipe] {
+  clip-path: none !important;
+}
+:root[data-cjp-motion="reduce"] [data-wipe="out"] {
+  opacity: 0;
+}
+:root[data-cjp-motion="reduce"] [data-reveal="in"],
+:root[data-cjp-motion="reduce"] [data-wipe="in"] {
+  opacity: 1;
+  transition: opacity var(--dur-3, 560ms) linear var(--reveal-delay, 0ms) !important;
+}
+:root[data-cjp-motion="reduce"] .wipe-in[data-sr-settle] > * {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Print and "save as PDF" always get the finished page. */
+@media print {
+  [data-reveal],
+  [data-wipe],
+  [data-wipe] > [data-sr-settle] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

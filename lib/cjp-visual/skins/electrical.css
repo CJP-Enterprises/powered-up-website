@@ -1,0 +1,28 @@
+/* CJP_VISUAL_VERSION = 1.5.3 */
+/* cjp-visual skin: electrical. Electrical: neutral-cool greys, tight 8px cards.
+   Tailwind v4 @theme token overrides ONLY. No selectors, no components.
+   --color-accent is a placeholder: the site's logo-sampled ramp (DESIGN SYSTEM)
+   overrides it after this file. Components take brand colour as an `accent`
+   prop; presets never hard-code a client's brand. */
+@theme static {
+  --color-accent: #d99a00;
+  --color-grey-50: #f7f7f8;
+  --color-grey-100: #eeeef0;
+  --color-grey-200: #dcdde1;
+  --color-grey-300: #bdbfc6;
+  --color-grey-400: #9296a0;
+  --color-grey-500: #686c77;
+  --color-grey-600: #4b4e58;
+  --color-grey-700: #353841;
+  --color-grey-800: #22242b;
+  --color-grey-900: #15161b;
+  --color-grey-950: #0b0c0f;
+  --radius-card: 8px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-1: 160ms;
+  --dur-2: 260ms;
+  --dur-3: 420ms;
+  --dur-4: 650ms;
+  --reveal-distance: 16px;
+}

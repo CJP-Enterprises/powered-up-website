@@ -1,5 +1,7 @@
 import Link from "next/link";
 import QualifyForm from "@/components/QualifyForm";
+import ScrollReveal from "@/components/cjp-visual/ScrollReveal/ScrollReveal";
+import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical";
 import { services } from "@/lib/services";
 
 const Arrow = ({ w = "2.5" }: { w?: string }) => (
@@ -401,7 +403,7 @@ export default function Home() {
             handled from quote to inspection by the same licensed electrician.
           </p>
           <div className="hero-ctas">
-            <Link href="#book" className="btn btn-primary">
+            <Link href="/contact" className="btn btn-primary">
               Book a Call
               <Arrow />
             </Link>
@@ -467,7 +469,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="services-grid">
+          <ScrollReveal preset={electrical} className="services-grid">
             {services.map((s) => (
               <Link href={`/services/${s.slug}`} className="service" key={s.slug}>
                 <div className="service-num">{s.homepageLabel}</div>
@@ -479,7 +481,7 @@ export default function Home() {
                 </span>
               </Link>
             ))}
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -637,13 +639,13 @@ export default function Home() {
             Greater Boston area and the South Shore.
           </p>
 
-          <div className="towns-grid">
+          <ScrollReveal preset={electrical} className="towns-grid">
             {TOWNS.map((t, i) => (
               <div className={`town${i === 0 ? " hub" : ""}`} key={t}>
                 {t}
               </div>
             ))}
-          </div>
+          </ScrollReveal>
 
           <div className="area-cta">
             <span className="area-cta-text">Don&apos;t see your town?</span>
@@ -707,7 +709,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="reviews-grid">
+          <ScrollReveal preset={electrical} className="reviews-grid">
             {REVIEWS.map((r) => (
               <div className="review-card" key={r.name}>
                 <div className="review-stars">
@@ -722,7 +724,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </div>
+          </ScrollReveal>
 
           <div className="reviews-footer">
             <span className="reviews-footer-text">{`See all ${REVIEW_COUNT} reviews on Google →`}</span>
