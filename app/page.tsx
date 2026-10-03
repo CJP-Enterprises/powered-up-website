@@ -3,6 +3,8 @@ import QualifyForm from "@/components/QualifyForm";
 import ScrollReveal from "@/components/cjp-visual/ScrollReveal/ScrollReveal";
 import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical";
 import { services } from "@/lib/services";
+import GoogleReviewsBand from "@/components/GoogleReviewsBand";
+import { getGoogleRating, type GoogleRating } from "@/lib/googleRating";
 
 const Arrow = ({ w = "2.5" }: { w?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={w}>
@@ -128,10 +130,7 @@ const FAQ = [
   },
 ];
 
-const REVIEW_COUNT = 24;
-const REVIEW_RATING = "5.0";
-
-const JSON_LD = {
+const jsonLd = (rating: GoogleRating) => ({
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -177,13 +176,17 @@ const JSON_LD = {
         opens: "07:00",
         closes: "19:00",
       },
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: REVIEW_RATING,
-        reviewCount: String(REVIEW_COUNT),
-        bestRating: "5",
-        worstRating: "1",
-      },
+      ...(rating.count > 0
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: rating.rating.toFixed(1),
+              reviewCount: String(rating.count),
+              bestRating: "5",
+              worstRating: "1",
+            },
+          }
+        : {}),
       parentOrganization: { "@id": "https://www.poweredbymicah.com/#organization" },
       location: { "@id": "https://www.poweredbymicah.com/#place" },
       hasOfferCatalog: {
@@ -333,7 +336,7 @@ const JSON_LD = {
       speakable: { "@type": "SpeakableSpecification", cssSelector: [".faq-answer", ".hero-sub"] },
     },
   ],
-};
+});
 
 const REVIEWS = [
   {
@@ -368,7 +371,8 @@ const REVIEWS = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const rating = await getGoogleRating();
   return (
     <>
       {/* HERO */}
@@ -390,7 +394,8 @@ export default function Home() {
         />
         <div className="hero-scrim" />
         <div className="hero-glow" />
-        <div className="hero-content">
+        <div className="hero-content hero-split">
+          <div className="hero-copy">
           <div className="hero-eyebrow">
             <span>Taunton, MA · Est. 2024</span>
           </div>
@@ -430,15 +435,19 @@ export default function Home() {
               <span className="hero-meta-lbl">Licensed &amp; Insured</span>
             </div>
           </div>
+          </div>
+
+          {/* QUALIFICATION FORM: the homepage's one form lives in the hero. */}
+          <div className="hero-form" id="estimate">
+            {/* /#book links from other pages land here. */}
+            <span id="book" className="hero-form-anchor" aria-hidden="true" />
+            <QualifyForm />
+          </div>
         </div>
       </section>
 
-      {/* QUALIFICATION FORM */}
-      <section id="book" className="qualify">
-        <div className="wrap">
-          <QualifyForm />
-        </div>
-      </section>
+      {/* GOOGLE REVIEWS BAND */}
+      <GoogleReviewsBand rating={rating} />
 
       {/* MARQUEE */}
       <div className="marquee">
@@ -690,13 +699,13 @@ export default function Home() {
             <div>
               <div className="eyebrow">Real Customers · Real Reviews</div>
               <h2 className="h-section">
-                5.0 stars.<br />
-                <em>{`${REVIEW_COUNT} Google reviews.`}</em>
+                {`${rating.rating.toFixed(1)} stars.`}<br />
+                <em>{`${rating.count} Google reviews.`}</em>
               </h2>
             </div>
             <div className="section-head-right">
               <a
-                href="https://g.page/r/CWGsx9WryGDjEAE/review"
+                href={rating.reviewUrl}
                 target="_blank"
                 rel="noopener"
                 className="btn btn-primary"
@@ -727,9 +736,9 @@ export default function Home() {
           </ScrollReveal>
 
           <div className="reviews-footer">
-            <span className="reviews-footer-text">{`See all ${REVIEW_COUNT} reviews on Google →`}</span>
+            <span className="reviews-footer-text">{`See all ${rating.count} reviews on Google →`}</span>
             <a
-              href="https://www.google.com/search?q=Powered+Up+LLC+Taunton"
+              href={rating.mapsUrl}
               target="_blank"
               rel="noopener"
               className="btn btn-ghost"
@@ -807,7 +816,7 @@ export default function Home() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(rating)) }}
       />
     </>
   );
