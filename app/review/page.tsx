@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Micah's Google review link (the same one the home page reviews section uses).
-const GOOGLE_REVIEW_URL = "https://g.page/r/CWGsx9WryGDjEAE/review";
+// Micah's Google review link (the same one the home page reviews band uses).
+import { GOOGLE_REVIEW_URL } from "@/lib/googleRating";
 
 /**
  * /review — the branded link a review-request text carries. 10DLC content must
