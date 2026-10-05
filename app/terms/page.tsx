@@ -45,9 +45,8 @@ export default function TermsPage() {
             <p>
               <strong>How you opt in.</strong> You opt in by contacting us first. If you call{" "}
               <a href="tel:+15086225919">(508) 622-5919</a> and we cannot pick up, we text that number
-              back to ask what you need. If you submit the quote form and tick the optional text box,
-              you are agreeing we may text you about that request. We never text a number that did
-              not contact us first, and we never buy, rent or import lists.
+              back to ask what you need. We never text a number that did not contact us first, and we
+              never buy, rent or import lists.
             </p>
             <p>
               <strong>What we send.</strong> A reply when we miss your call, confirmation that your

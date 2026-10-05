@@ -32,9 +32,8 @@ export default function PrivacyPage() {
             <h2>What we collect</h2>
             <p>
               <strong>Information you give us.</strong> If you fill in the quote form, we collect your
-              name, phone number, email address, town, the kind of work, your timeline, any project
-              details you type, and whether you ticked the optional text box. Nothing on the form is
-              collected that you did not enter.
+              name, phone number, email address, town, the kind of work, your timeline, and any project
+              details you type. Nothing on the form is collected that you did not enter.
             </p>
             <p>
               <strong>Anti-spam signals.</strong> The form includes a hidden field that a person never
@@ -79,10 +78,9 @@ export default function PrivacyPage() {
             <h2>Text messages</h2>
             <p>
               If you call Powered Up LLC and the call is not answered, an automated text is sent back
-              to the number you called from, asking what you need. If you submit the quote form and
-              tick the optional text box, you may get a text confirming it arrived. After a completed
-              job you may get one text asking for a review. That is the whole program: service
-              messages about your own enquiry or your own job.
+              to the number you called from, asking what you need. After a completed job you may get
+              one text asking for a review. That is the whole program: service messages about your own
+              enquiry or your own job.
             </p>
             <p>
               Message frequency varies and depends on what you contact us about. Message and data
