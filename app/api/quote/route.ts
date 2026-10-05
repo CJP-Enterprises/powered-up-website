@@ -48,10 +48,9 @@ type QuoteFields = {
   service: string;
   town: string;
   notes: string;
-  texts: string;
 };
 
-function buildHtml({ name, phone, email, service, town, notes, texts }: QuoteFields): string {
+function buildHtml({ name, phone, email, service, town, notes }: QuoteFields): string {
   const townDisplay = town || "Not provided";
   const notesDisplay = notes || "None provided";
   return `<!doctype html>
@@ -91,10 +90,6 @@ function buildHtml({ name, phone, email, service, town, notes, texts }: QuoteFie
                 <td style="padding:10px 0;border-bottom:1px solid #e6dfd2;">${esc(townDisplay)}</td>
               </tr>
               <tr>
-                <td style="padding:10px 0;border-bottom:1px solid #e6dfd2;font-weight:700;color:#0a1a2f;">Texts</td>
-                <td style="padding:10px 0;border-bottom:1px solid #e6dfd2;font-weight:700;">${esc(texts)}</td>
-              </tr>
-              <tr>
                 <td style="padding:10px 0;font-weight:700;color:#0a1a2f;vertical-align:top;">Details</td>
                 <td style="padding:10px 0;white-space:pre-line;">${esc(notesDisplay)}</td>
               </tr>
@@ -116,7 +111,7 @@ function buildHtml({ name, phone, email, service, town, notes, texts }: QuoteFie
 </html>`;
 }
 
-function buildText({ name, phone, email, service, town, notes, texts }: QuoteFields): string {
+function buildText({ name, phone, email, service, town, notes }: QuoteFields): string {
   return [
     "New Quote Request — Powered Up LLC",
     "",
@@ -125,7 +120,6 @@ function buildText({ name, phone, email, service, town, notes, texts }: QuoteFie
     `Email:   ${email}`,
     `Service: ${service}`,
     `Town:    ${town || "Not provided"}`,
-    `Texts:   ${texts}`,
     `Details: ${notes || "None provided"}`,
     "",
     "Reply to this email to respond directly to the homeowner.",
@@ -143,8 +137,6 @@ export async function POST(req: Request) {
     const service = String(body.service || "").trim();
     const town = String(body.town || "").trim();
     const notes = String(body.notes || "").trim();
-    // Optional SMS opt-in from the form. Anything but a literal true is a NO.
-    const texts = body.sms_consent === true ? "YES" : "NO - do not text unless they text first";
 
     if (!name || !phone || !email || !service) {
       return Response.json({ ok: false, error: "Missing required fields." }, { status: 400 });
@@ -204,8 +196,8 @@ export async function POST(req: Request) {
       to: toEmail,
       reply_to: email,
       subject,
-      html: buildHtml({ name, phone, email, service, town, notes, texts }),
-      text: buildText({ name, phone, email, service, town, notes, texts }),
+      html: buildHtml({ name, phone, email, service, town, notes }),
+      text: buildText({ name, phone, email, service, town, notes }),
     } as Parameters<typeof resend.emails.send>[0]);
 
     if (error) {
