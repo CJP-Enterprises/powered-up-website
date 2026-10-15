@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: { unoptimized: true },
   async rewrites() {
     return [
       // The "Or book online" link in missed-call texts: shows this domain, the tap is still recorded in the CJP CRM.
