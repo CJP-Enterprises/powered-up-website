@@ -16,7 +16,7 @@
   --color-yellow: #FFD400;
   --color-yellow-deep: #E8BE00;
 
-  --font-display: 'Archivo Black', sans-serif;
+  --font-display: 'Rubik', system-ui, sans-serif;
   --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -36,7 +36,7 @@
   --muted-strong: rgba(244, 239, 230, 0.75);
   --line:        rgba(244, 239, 230, 0.10);
   --line-strong: rgba(244, 239, 230, 0.22);
-  --font-display: 'Archivo Black', sans-serif;
+  --font-display: 'Rubik', system-ui, sans-serif;
   --font-body:    'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 }
