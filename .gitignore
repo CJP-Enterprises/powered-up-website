@@ -15,3 +15,6 @@ legacy-static/
 
 # Pre-compression image backups (local safety copies)
 /public/photos/_originals/
+
+# Responsive image variants (scripts/build-image-variants.mjs, run by prebuild)
+/public/_v
