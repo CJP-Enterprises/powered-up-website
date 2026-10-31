@@ -1,10 +1,20 @@
 import type { Metadata, Viewport } from "next";
+import { Brygada_1918 } from "next/font/google";
 import "./globals.css";
 import TopBar from "@/components/TopBar";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import LeadTracking from "@/components/LeadTracking";
+
+// Headline accent face (own accent family, vault ops/font-registry.md).
+const accent = Brygada_1918({
+  weight: "600",
+  style: "italic",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-accent",
+});
 
 const SITE_URL = "https://www.poweredbymicah.com";
 
@@ -58,7 +68,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={accent.variable}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

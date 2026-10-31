@@ -155,7 +155,7 @@ export default function GalleryPage() {
         <div className="wrap">
           <div className="eyebrow">Recent Work</div>
           <h1>
-            Real jobs.<br />Real <em>South Shore</em> homes.
+            Real jobs.<br />Real <em className="accent">South Shore</em> homes.
           </h1>
           <p>
             A look at recent installations and service work across Taunton, Brockton, Plymouth, and
