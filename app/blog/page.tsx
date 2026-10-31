@@ -26,7 +26,7 @@ export default function BlogIndex() {
         <div className="wrap">
           <div className="eyebrow">From the Field</div>
           <h1>
-            Notes from <em>the panel</em>.
+            Notes from <em className="accent">the panel</em>.
           </h1>
           <p>
             Practical electrical guidance, project write-ups, and answers to the questions

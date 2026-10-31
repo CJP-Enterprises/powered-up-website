@@ -17,7 +17,7 @@ export default function ServicesIndex() {
           <h1>
             Every kind of electrical work.
             <br />
-            <em>One licensed electrician.</em>
+            <em className="accent">One licensed electrician.</em>
           </h1>
           <p className="page-header-sub">
             Powered Up LLC handles residential and light commercial electrical across Taunton, the

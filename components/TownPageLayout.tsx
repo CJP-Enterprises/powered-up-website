@@ -114,7 +114,7 @@ export default function TownPageLayout({
           <h1>
             {heroTitle}
             <br />
-            <em>{heroTitleHighlight}</em>
+            <em className="accent">{heroTitleHighlight}</em>
           </h1>
           <p className="hero-sub">{heroSub}</p>
           <div className="hero-ctas">
