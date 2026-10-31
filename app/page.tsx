@@ -5,6 +5,7 @@ import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical"
 import { services } from "@/lib/services";
 import GoogleReviewsBand from "@/components/GoogleReviewsBand";
 import { getGoogleRating, type GoogleRating } from "@/lib/googleRating";
+import { rimg } from "@/lib/responsive-img";
 
 const Arrow = ({ w = "2.5" }: { w?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={w}>
@@ -385,7 +386,7 @@ export default async function Home() {
             paints immediately. */}
         <img
           className="hero-media"
-          src="/photos/span-panel-hero.webp"
+          {...rimg("/photos/span-panel-hero.webp", "100vw")}
           alt="A SPAN smart electrical panel installed by Powered Up LLC, backlit and open to show the breaker layout"
           width={820}
           height={1093}
@@ -501,7 +502,7 @@ export default async function Home() {
             <div className="proof-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/photos/work-400a-install.jpg"
+                {...rimg("/photos/work-400a-install.jpg")}
                 alt="400A electrical service install by Powered Up LLC"
               />
               <div className="proof-photo-tag">400A · Recent Install</div>
@@ -560,7 +561,7 @@ export default async function Home() {
             <div className="meet-micah-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/photos/micah-portrait.jpg"
+                {...rimg("/photos/micah-portrait.jpg")}
                 alt="Micah Gentile, owner and licensed electrician at Powered Up LLC, standing in front of Enphase battery backup installation"
               />
               <div className="meet-micah-badge">

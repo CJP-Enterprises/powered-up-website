@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { rimg } from "@/lib/responsive-img";
 
 export const metadata: Metadata = {
   title: { absolute: "Recent Work | Powered Up LLC | Taunton, MA Electrician" },
@@ -172,7 +173,7 @@ export default function GalleryPage() {
               <div className={item.cls} key={item.title}>
                 <div className="gallery-item-photo">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.src} alt={item.alt} loading="lazy" />
+                  <img {...rimg(item.src)} alt={item.alt} loading="lazy" />
                 </div>
                 <div className="gallery-item-meta">
                   <span className="gallery-item-tag">{item.tag}</span>
