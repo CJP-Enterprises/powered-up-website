@@ -310,7 +310,13 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
           below and he&apos;ll call you to confirm.
         </div>
         <div className="qualify-calendar">
-          <iframe src={CALENDAR_SRC} frameBorder="0" title="Book a call with Micah" />
+          {/* Mounted only once step 3 is reached. The step is display:none until
+              then, and Chrome loads hidden iframes eagerly even with
+              loading="lazy", so an always-rendered iframe pulled ~3 MB of
+              Calendly + Stripe JS/CSS on every page load. */}
+          {step === 3 && (
+            <iframe src={CALENDAR_SRC} frameBorder="0" title="Book a call with Micah" loading="lazy" />
+          )}
         </div>
         <p className="qualify-sub" style={{ marginTop: 18, marginBottom: 0 }}>
           Trouble with the calendar? Call Micah directly at{" "}
