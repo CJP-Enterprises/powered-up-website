@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { screenLead } from "@/lib/leadGuard";
+import { notifySignal } from "@/lib/signal";
 
 // Run on the Node.js runtime (Resend SDK + in-memory rate limiting).
 export const runtime = "nodejs";
@@ -208,6 +209,7 @@ export async function POST(req: Request) {
       );
     }
 
+    await notifySignal({ name: String(name ?? ""), email: String(email ?? ""), phone: phone ? String(phone) : undefined, message: notes ? String(notes) : undefined });
     return Response.json({ ok: true });
   } catch (err) {
     console.error("Quote handler error:", err);
