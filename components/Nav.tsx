@@ -61,7 +61,7 @@ export default function Nav() {
         <Link href="/" className="nav-logo" onClick={() => setOpen(false)}>
           <div className="nav-logo-badge">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Powered Up LLC" />
+            <img src="/logo-68.png" alt="Powered Up LLC" />
           </div>
           <span className="nav-logo-text">
             POWERED <span>UP</span>

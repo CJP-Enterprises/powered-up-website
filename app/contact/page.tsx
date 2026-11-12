@@ -15,7 +15,7 @@ export default function ContactPage() {
         <div className="wrap">
           <div className="eyebrow">Book a Call</div>
           <h1>
-            Get a quote.<br />Talk to <em>Micah</em>.
+            Get a quote.<br />Talk to <em className="accent">Micah</em>.
           </h1>
           <p>
             Fill in the quick form, then pick a time on Micah&apos;s calendar. Prefer to call? Reach

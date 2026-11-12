@@ -5,6 +5,7 @@ import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical"
 import { services } from "@/lib/services";
 import GoogleReviewsBand from "@/components/GoogleReviewsBand";
 import { getGoogleRating, type GoogleRating } from "@/lib/googleRating";
+import { rimg } from "@/lib/responsive-img";
 
 const Arrow = ({ w = "2.5" }: { w?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={w}>
@@ -385,7 +386,7 @@ export default async function Home() {
             paints immediately. */}
         <img
           className="hero-media"
-          src="/photos/span-panel-hero.webp"
+          {...rimg("/photos/span-panel-hero.webp", "100vw")}
           alt="A SPAN smart electrical panel installed by Powered Up LLC, backlit and open to show the breaker layout"
           width={820}
           height={1093}
@@ -400,7 +401,7 @@ export default async function Home() {
             <span>Taunton, MA · Est. 2024</span>
           </div>
           <h1>
-            When you call,<br />you get <em>Micah</em>.<br />Not a call center.
+            When you call,<br />you get <em className="accent">Micah</em>.<br />Not a call center.
           </h1>
           <p className="hero-sub">
             <strong>Powered Up LLC</strong> is an owner-operated electrical contractor serving
@@ -467,7 +468,7 @@ export default async function Home() {
             <div>
               <div className="eyebrow">What We Do</div>
               <h2 className="h-section">
-                Electrical work,<br />handled <em>start to finish</em>.
+                Electrical work,<br />handled <em className="accent">start to finish</em>.
               </h2>
             </div>
             <div className="section-head-right">
@@ -501,7 +502,7 @@ export default async function Home() {
             <div className="proof-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/photos/work-400a-install.jpg"
+                {...rimg("/photos/work-400a-install.jpg")}
                 alt="400A electrical service install by Powered Up LLC"
               />
               <div className="proof-photo-tag">400A · Recent Install</div>
@@ -511,7 +512,7 @@ export default async function Home() {
               <div className="eyebrow">Why Powered Up</div>
               <h2 className="h-section">
                 No subs. No call centers.<br />
-                <em>One licensed electrician.</em>
+                <em className="accent">One licensed electrician.</em>
               </h2>
               <p className="sub-section" style={{ marginBottom: 30 }}>
                 When you call Powered Up, you get the same person who shows up to do the work, runs
@@ -560,7 +561,7 @@ export default async function Home() {
             <div className="meet-micah-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/photos/micah-portrait.jpg"
+                {...rimg("/photos/micah-portrait.jpg")}
                 alt="Micah Gentile, owner and licensed electrician at Powered Up LLC, standing in front of Enphase battery backup installation"
               />
               <div className="meet-micah-badge">
@@ -632,7 +633,7 @@ export default async function Home() {
             <div>
               <div className="eyebrow">Where We Work</div>
               <h2 className="h-section">
-                20 towns. <em>One driving radius.</em>
+                20 towns. <em className="accent">One driving radius.</em>
               </h2>
             </div>
             <div className="section-head-right">
@@ -757,7 +758,7 @@ export default async function Home() {
               <div className="eyebrow">Direct Contact</div>
               <h2 className="h-section">
                 Prefer to call?<br />
-                <em>Reach Micah direct.</em>
+                <em className="accent">Reach Micah direct.</em>
               </h2>
             </div>
           </div>
