@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Brygada_1918 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import TopBar from "@/components/TopBar";
 import Nav from "@/components/Nav";
@@ -90,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         {children}
         <Footer />
+        <Script src="https://signal.cjp-enterprises.com/signal-tag.js" data-slug="powered-up-llc" strategy="afterInteractive" />
       </body>
     </html>
   );
