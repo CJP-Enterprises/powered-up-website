@@ -4,7 +4,7 @@ import ScrollReveal from "@/components/cjp-visual/ScrollReveal/ScrollReveal";
 import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical";
 import { services } from "@/lib/services";
 import GoogleReviewsBand from "@/components/GoogleReviewsBand";
-import { getGoogleRating, PLACE_ID, type GoogleRating } from "@/lib/googleRating";
+import { getGoogleRating, PLACE_ID } from "@/lib/googleRating";
 import { getLiveReviews, mergeReviews } from "@/lib/liveReviews";
 import { rimg } from "@/lib/responsive-img";
 
@@ -132,7 +132,10 @@ const FAQ = [
   },
 ];
 
-const jsonLd = (rating: GoogleRating) => ({
+// The business entity carries no rating markup: a rating a business publishes about
+// itself is self-serving under Google's guidelines and earns no stars. The live
+// Google rating is shown in the UI only.
+const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -178,17 +181,6 @@ const jsonLd = (rating: GoogleRating) => ({
         opens: "07:00",
         closes: "19:00",
       },
-      ...(rating.count > 0
-        ? {
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: rating.rating.toFixed(1),
-              reviewCount: String(rating.count),
-              bestRating: "5",
-              worstRating: "1",
-            },
-          }
-        : {}),
       parentOrganization: { "@id": "https://www.poweredbymicah.com/#organization" },
       location: { "@id": "https://www.poweredbymicah.com/#place" },
       hasOfferCatalog: {
@@ -338,7 +330,7 @@ const jsonLd = (rating: GoogleRating) => ({
       speakable: { "@type": "SpeakableSpecification", cssSelector: [".faq-answer", ".hero-sub"] },
     },
   ],
-});
+};
 
 type Review = { name: string; source: string; body: string };
 
@@ -836,7 +828,7 @@ export default async function Home() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(rating)) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
     </>
   );
