@@ -1,8 +1,8 @@
 /**
  * The Google rating and review count, read from the live listing through the
  * CJP rating feed (no Google API key on this site), cached for an hour (ISR).
- * The homepage reviews band, the reviews section and the AggregateRating
- * schema all read this, so there is one source.
+ * The homepage reviews band and the reviews section read this, so there is one
+ * source. The JSON-LD carries no rating.
  */
 export type GoogleRating = {
   rating: number;
