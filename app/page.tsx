@@ -200,6 +200,7 @@ const jsonLd = {
         ].map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
       },
       sameAs: ["https://www.facebook.com/poweredupllc"],
+      knowsAbout: services.map((s) => s.serviceName),
     },
     {
       "@type": "Organization",

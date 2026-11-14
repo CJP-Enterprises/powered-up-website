@@ -28,7 +28,10 @@ export const metadata: Metadata = {
   description:
     "Licensed, owner-operated electrical contractor serving Taunton, Brockton, Plymouth and the South Shore. New construction, remodels, panel upgrades, EV chargers. Free estimates. Call Micah directly.",
   authors: [{ name: "Powered Up LLC" }],
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    types: { "application/rss+xml": `${SITE_URL}/feed.xml` },
+  },
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
@@ -54,7 +57,18 @@ export const metadata: Metadata = {
       "Owner-operated electrical contractor — Taunton to Plymouth. Free estimates within 24 hours. When you call, you get Micah.",
     images: ["/og-image.jpg"],
   },
-  robots: { index: true, follow: true, "max-image-preview": "large" } as Metadata["robots"],
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   other: {
     "geo.region": "US-MA",
     "geo.placename": "Taunton, Massachusetts",
