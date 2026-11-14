@@ -4,7 +4,8 @@ import ScrollReveal from "@/components/cjp-visual/ScrollReveal/ScrollReveal";
 import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical";
 import { services } from "@/lib/services";
 import GoogleReviewsBand from "@/components/GoogleReviewsBand";
-import { getGoogleRating, type GoogleRating } from "@/lib/googleRating";
+import { getGoogleRating, PLACE_ID, type GoogleRating } from "@/lib/googleRating";
+import { getLiveReviews, mergeReviews } from "@/lib/liveReviews";
 import { rimg } from "@/lib/responsive-img";
 
 const Arrow = ({ w = "2.5" }: { w?: string }) => (
@@ -339,7 +340,12 @@ const jsonLd = (rating: GoogleRating) => ({
   ],
 });
 
-const REVIEWS = [
+type Review = { name: string; source: string; body: string };
+
+// Never on the site, even inside a quote (vault never_say): prices, code citations.
+const OFF_LIMITS = /\$\s?\d|\bNEC\b|\bCMR\b/i;
+
+const REVIEWS: Review[] = [
   {
     name: "Jan Schwaner",
     source: "Google Review",
@@ -373,7 +379,20 @@ const REVIEWS = [
 ];
 
 export default async function Home() {
-  const rating = await getGoogleRating();
+  // Rating + live reviews fetched together server-side (page is already ISR via
+  // lib/googleRating.ts); the reviews grid is far below the fold.
+  const [rating, live] = await Promise.all([getGoogleRating(), getLiveReviews(PLACE_ID)]);
+  // Curated reviews + up to 3 newer 4-5 star ones from Google, verbatim.
+  const reviews = mergeReviews<Review>(
+    REVIEWS,
+    live.filter((l) => !OFF_LIMITS.test(l.text)),
+    {
+      text: (r) => r.body,
+      author: (r) => r.name,
+      from: (l) => ({ name: l.author, source: "Google Review", body: `“${l.text}”` }),
+      placement: "end",
+    },
+  );
   return (
     <>
       {/* HERO */}
@@ -720,7 +739,7 @@ export default async function Home() {
           </div>
 
           <ScrollReveal preset={electrical} className="reviews-grid">
-            {REVIEWS.map((r) => (
+            {reviews.map((r) => (
               <div className="review-card" key={r.name}>
                 <div className="review-stars">
                   {Array.from({ length: 5 }).map((_, i) => (
