@@ -1,6 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Baseline security headers (Ranked SEO Playbook #556). No CSP/HSTS here.
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
   // Never Vercel's /_next/image optimizer (account-wide quota, 402'd client
   // images). Any next/image goes through the pre-sized variants written by
   // scripts/build-image-variants.mjs (run by `prebuild`); raw <img> tags use
