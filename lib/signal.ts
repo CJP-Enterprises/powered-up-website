@@ -6,8 +6,9 @@
    CJP_SIGNAL_API_KEY (the workspace's ingest key, server-only) makes the lead
    TRUSTED: the CRM records a slug-only lead but never texts it back. */
 import { createHash } from "node:crypto";
+import type { Attribution } from "./attribution";
 
-export interface SignalLead { name: string; email: string; phone?: string; service?: string; message?: string; page?: string; renderedAt?: number }
+export interface SignalLead { name: string; email: string; phone?: string; service?: string; message?: string; page?: string; renderedAt?: number; attribution?: Attribution; test?: boolean }
 
 export async function notifySignal(lead: SignalLead): Promise<"SENT" | "NOT_CONFIGURED" | "FAILED"> {
   const url = process.env.CJP_SIGNAL_INGEST_URL;
@@ -20,7 +21,7 @@ export async function notifySignal(lead: SignalLead): Promise<"SENT" | "NOT_CONF
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: origin, ...(process.env.CJP_SIGNAL_API_KEY ? { Authorization: `Bearer ${process.env.CJP_SIGNAL_API_KEY}` } : {}) },
-      body: JSON.stringify({ type: "lead", slug, name: lead.name, email: lead.email, phone: lead.phone || undefined, service: lead.service || undefined, message: lead.message || undefined, source: "website_form", dedupeKey, form_location: "quote-form", source_path: lead.page || undefined, site_url: origin }),
+      body: JSON.stringify({ type: "lead", slug, name: lead.name, email: lead.email, phone: lead.phone || undefined, service: lead.service || undefined, message: lead.message || undefined, source: "website_form", dedupeKey, form_location: "quote-form", source_path: lead.page || undefined, site_url: origin, attribution: lead.attribution ?? null, ...(lead.test ? { test: true } : {}) }),
       signal: AbortSignal.timeout(4000),
     });
     return res.ok ? "SENT" : "FAILED";

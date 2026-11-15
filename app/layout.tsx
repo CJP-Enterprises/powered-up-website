@@ -7,6 +7,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import LeadTracking from "@/components/LeadTracking";
+import AttributionScript from "@/components/AttributionScript";
 
 // Headline accent face (own accent family, vault ops/font-registry.md).
 const accent = Brygada_1918({
@@ -99,6 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             image on every page of the site. */}
       </head>
       <body>
+        <AttributionScript />
         <LeadTracking />
         <GoogleAnalytics />
         <TopBar />

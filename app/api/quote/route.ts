@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 import { screenLead } from "@/lib/leadGuard";
 import { notifySignal } from "@/lib/signal";
+import { attributionLine, attributionLineHtml, sanitizeAttribution, type Attribution } from "@/lib/attribution";
+import { checkTestLead, TEST_SUBJECT_PREFIX } from "@/lib/testLead";
 
 // Run on the Node.js runtime (Resend SDK + in-memory rate limiting).
 export const runtime = "nodejs";
@@ -49,9 +51,10 @@ type QuoteFields = {
   service: string;
   town: string;
   notes: string;
+  attribution?: Attribution;
 };
 
-function buildHtml({ name, phone, email, service, town, notes }: QuoteFields): string {
+function buildHtml({ name, phone, email, service, town, notes, attribution }: QuoteFields): string {
   const townDisplay = town || "Not provided";
   const notesDisplay = notes || "None provided";
   return `<!doctype html>
@@ -95,6 +98,7 @@ function buildHtml({ name, phone, email, service, town, notes }: QuoteFields): s
                 <td style="padding:10px 0;white-space:pre-line;">${esc(notesDisplay)}</td>
               </tr>
             </table>
+            ${attribution ? `<p style="margin:16px 0 0;font-size:12px;color:#6b6457;">Came from: ${attributionLineHtml(attribution)}</p>` : ""}
             <div style="margin-top:24px;padding:14px 16px;background:#f5c518;color:#0a1a2f;font-weight:700;font-size:14px;">
               Reply to this email to respond directly to the homeowner.
             </div>
@@ -112,7 +116,8 @@ function buildHtml({ name, phone, email, service, town, notes }: QuoteFields): s
 </html>`;
 }
 
-function buildText({ name, phone, email, service, town, notes }: QuoteFields): string {
+function buildText({ name, phone, email, service, town, notes, attribution }: QuoteFields): string {
+  const cameFrom = attributionLine(attribution);
   return [
     "New Quote Request — Powered Up LLC",
     "",
@@ -122,6 +127,7 @@ function buildText({ name, phone, email, service, town, notes }: QuoteFields): s
     `Service: ${service}`,
     `Town:    ${town || "Not provided"}`,
     `Details: ${notes || "None provided"}`,
+    ...(cameFrom ? [`Came from: ${cameFrom}`] : []),
     "",
     "Reply to this email to respond directly to the homeowner.",
   ].join("\n");
@@ -138,6 +144,12 @@ export async function POST(req: Request) {
     const service = String(body.service || "").trim();
     const town = String(body.town || "").trim();
     const notes = String(body.notes || "").trim();
+    // First/last-touch attribution (lib/attribution.ts). Visitor-controlled:
+    // sanitised here; only the escaped line goes into the HTML email.
+    const attribution = sanitizeAttribution(body.attribution);
+    // Synthetic CJP test lead (lib/testLead.ts): skips the rate limit and the
+    // guard's fill-time check only, mails CJP's test inbox, never the owner.
+    const test = checkTestLead(body.cjp_test_token);
 
     if (!name || !phone || !email || !service) {
       return Response.json({ ok: false, error: "Missing required fields." }, { status: 400 });
@@ -160,7 +172,7 @@ export async function POST(req: Request) {
         phone,
         message: notes,
         honeypot: body.website,
-        renderedAt: body.renderedAt,
+        renderedAt: test.isTest ? undefined : body.renderedAt,
         extra: { service, town },
       },
       { requireMessage: false },
@@ -169,7 +181,7 @@ export async function POST(req: Request) {
     if (blocked) return blocked;
 
     const ip = getClientIp(req);
-    if (!checkRateLimit(ip)) {
+    if (!test.isTest && !checkRateLimit(ip)) {
       return Response.json(
         { ok: false, error: "Too many requests. Please try again later or call us directly." },
         { status: 429 }
@@ -177,7 +189,11 @@ export async function POST(req: Request) {
     }
 
     const apiKey = process.env.RESEND_API_KEY;
-    const toEmail = process.env.QUOTE_TO_EMAIL;
+    if (test.isTest && !test.to) {
+      console.error("CJP test lead refused: CJP_TEST_LEAD_TO is not set");
+      return Response.json({ ok: false, error: "Test inbox not configured." }, { status: 500 });
+    }
+    const toEmail = test.isTest ? test.to : process.env.QUOTE_TO_EMAIL;
     const fromEmail = process.env.QUOTE_FROM_EMAIL;
     if (!apiKey || !toEmail || !fromEmail) {
       console.error(
@@ -190,15 +206,15 @@ export async function POST(req: Request) {
     }
 
     const resend = new Resend(apiKey);
-    const subject = `New Quote Request — ${service} in ${town || "Unknown town"}`;
+    const subject = `${test.isTest ? TEST_SUBJECT_PREFIX : ""}New Quote Request — ${service} in ${town || "Unknown town"}`;
 
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: toEmail,
       reply_to: email,
       subject,
-      html: buildHtml({ name, phone, email, service, town, notes }),
-      text: buildText({ name, phone, email, service, town, notes }),
+      html: buildHtml({ name, phone, email, service, town, notes, attribution }),
+      text: buildText({ name, phone, email, service, town, notes, attribution }),
     } as Parameters<typeof resend.emails.send>[0]);
 
     if (error) {
@@ -209,8 +225,10 @@ export async function POST(req: Request) {
       );
     }
 
-    await notifySignal({ name: String(name ?? ""), email: String(email ?? ""), phone: phone ? String(phone) : undefined, message: notes ? String(notes) : undefined });
-    return Response.json({ ok: true });
+    await notifySignal({ name: String(name ?? ""), email: String(email ?? ""), phone: phone ? String(phone) : undefined, message: notes ? String(notes) : undefined, attribution, test: test.isTest });
+    if (test.isTest) return Response.json({ ok: true, test: true });
+    // lead:true is the only flag that lets the form fire generate_lead.
+    return Response.json({ ok: true, lead: true });
   } catch (err) {
     console.error("Quote handler error:", err);
     return Response.json(
