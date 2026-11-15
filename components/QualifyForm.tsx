@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { trackLead } from "@/lib/analytics";
+import { getAttribution } from "@/lib/attribution";
 
 const ArrowIcon = () => (
   <svg
@@ -104,22 +105,26 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
       website,
       // Anti-bot timing signal, stamped when the form became interactive.
       renderedAt: renderedAt.current,
+      attribution: getAttribution(),
     };
 
     setSending(true);
     try {
-      await fetch("/api/quote", {
+      const res = await fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      const result = (await res.json().catch(() => ({}))) as { lead?: boolean };
 
-      // GA4 key event. Inside the try, so a failed send is not counted as a
-      // lead — nothing reached the inbox in that case.
-      trackLead("form", {
-        form_name: "qualify",
-        form_destination: "/api/quote",
-      });
+      // GA4 key event, once, only when the route delivered the lead
+      // (lead:true). A failed send or a spam-screened { ok: true } is not a lead.
+      if (res.ok && result.lead) {
+        trackLead("form", {
+          form_name: "qualify",
+          form_destination: "/api/quote",
+        });
+      }
     } catch (e) {
       // Don't block the calendar booking even if the email send fails.
       console.error("Quote API error:", e);

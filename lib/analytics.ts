@@ -37,6 +37,12 @@ export const GA_EVENT = {
   generateLead: "generate_lead",
   /** Any `tel:` link clicked, anywhere on the site. */
   clickToCall: "click_to_call",
+  /** Any `sms:` link clicked. */
+  clickToText: "click_to_text",
+  /** Any `mailto:` link clicked. */
+  clickToEmail: "click_to_email",
+  /** Any maps / directions link clicked. */
+  directionsClick: "directions_click",
 } as const;
 
 export type LeadMethod = "phone_call" | "text_message" | "form" | "email";
