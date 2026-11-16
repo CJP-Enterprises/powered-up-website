@@ -5,7 +5,7 @@ import ScrollReveal from "@/components/cjp-visual/ScrollReveal/ScrollReveal";
 import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical";
 import { services } from "@/lib/services";
 import GoogleReviewsBand from "@/components/GoogleReviewsBand";
-import { getGoogleRating, PLACE_ID } from "@/lib/googleRating";
+import { getGoogleRating, isShowableLiveReview, PLACE_ID } from "@/lib/googleRating";
 import { getLiveReviews, mergeReviews } from "@/lib/liveReviews";
 import { rimg } from "@/lib/responsive-img";
 
@@ -337,7 +337,7 @@ const jsonLd = {
 type Review = { name: string; source: string; body: string };
 
 // Never on the site, even inside a quote (vault never_say): prices, code citations.
-const OFF_LIMITS = /\$\s?\d|\bNEC\b|\bCMR\b/i;
+// That list is NEVER_SHOW in lib/showableReview.ts, applied by isShowableLiveReview.
 
 const REVIEWS: Review[] = [
   {
@@ -379,7 +379,7 @@ export default async function Home() {
   // Curated reviews + up to 3 newer 4-5 star ones from Google, verbatim.
   const reviews = mergeReviews<Review>(
     REVIEWS,
-    live.filter((l) => !OFF_LIMITS.test(l.text)),
+    live.filter((l) => isShowableLiveReview(l)),
     {
       text: (r) => r.body,
       author: (r) => r.name,
