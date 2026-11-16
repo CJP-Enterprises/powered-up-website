@@ -89,7 +89,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         {post.description && <p className="post-lead">{post.description}</p>}
 
         <div className="prose prose-invert prose-brand">
-          <MDXRemote source={post.content} />
+          <MDXRemote source={post.content.replace(/^\s*#[ \t]+[^\r\n]*(?:\r?\n)+/, "")} />
         </div>
       </div>
 
