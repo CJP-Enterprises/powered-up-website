@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Brygada_1918 } from "next/font/google";
+import { Brygada_1918, JetBrains_Mono, Manrope, Rubik } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import TopBar from "@/components/TopBar";
@@ -17,6 +17,12 @@ const accent = Brygada_1918({
   display: "swap",
   variable: "--font-accent",
 });
+
+// Self-hosted with size-adjusted fallbacks (next/font): the Google Fonts
+// stylesheet swapped faces ~600 ms after paint and shifted the hero (CLS 0.10).
+const display = Rubik({ weight: "900", subsets: ["latin"], display: "swap", variable: "--font-rubik" });
+const body = Manrope({ weight: ["300", "400", "500", "600", "700", "800"], subsets: ["latin"], display: "swap", variable: "--font-manrope" });
+const mono = JetBrains_Mono({ weight: ["400", "500"], subsets: ["latin"], display: "swap", variable: "--font-jetbrains" });
 
 const SITE_URL = "https://www.poweredbymicah.com";
 
@@ -84,14 +90,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={accent.variable}>
+    <html lang="en" className={`${accent.variable} ${display.variable} ${body.variable} ${mono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
         {/* The hero preload that lived here pointed at the video poster, which
             was only reachable via a CSS background and so invisible to the
             preload scanner. The hero is now a real <img fetchPriority="high">
