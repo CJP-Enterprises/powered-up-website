@@ -39,6 +39,9 @@ test('normaliser: Arabic-Indic / full-width digits to ASCII, bidi + zero-width s
   assert.equal(ok('call ⁧919⁩-555-1212'), false) // bidi isolate
   assert.equal(ok('call 9​1‌9 5‍55 1⁠2️12'), false) // zero-width + variation selector split
   assert.equal(normalizeReviewField('Gr​eat‮ work'), 'Great work')
+  // Cf chars that are NOT default-ignorable (interlinear annotation, Arabic number sign)
+  assert.equal(ok('call 919￹555؀1212'), false)
+  assert.equal(normalizeReviewField('919￹555؀1212'), '9195551212')
 })
 
 test('full reviews keep ordinary numbers (7-digits-total rule is quote-only)', () => {

@@ -38,14 +38,14 @@ function asciiDigit(d: string): string {
 
 /**
  * Exactly what the site renders (every caller shows the normalised string):
- * NFKC -> strip default-ignorables (format chars, bidi overrides/isolates,
+ * NFKC -> strip Cf + default-ignorables (format chars, bidi overrides/isolates,
  * variation selectors, zero-width) -> every decimal digit to ASCII ->
  * collapse whitespace -> trim. After this the \d patterns see every digit.
  */
 export function normalizeReviewField(s: string): string {
   return s
     .normalize('NFKC')
-    .replace(/\p{Default_Ignorable_Code_Point}/gu, '')
+    .replace(/[\p{Cf}\p{Default_Ignorable_Code_Point}]/gu, '')
     .replace(/\p{Nd}/gu, asciiDigit)
     .replace(/\s+/g, ' ')
     .trim()
