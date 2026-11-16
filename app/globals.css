@@ -16,9 +16,9 @@
   --color-yellow: #FFD400;
   --color-yellow-deep: #E8BE00;
 
-  --font-display: 'Rubik', system-ui, sans-serif;
-  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: var(--font-rubik), 'Rubik', system-ui, sans-serif;
+  --font-body: var(--font-manrope), 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
 }
 
 /* ===== BESPOKE SITE STYLES (ported verbatim from the original static site) ===== */
@@ -36,9 +36,9 @@
   --muted-strong: rgba(244, 239, 230, 0.75);
   --line:        rgba(244, 239, 230, 0.10);
   --line-strong: rgba(244, 239, 230, 0.22);
-  --font-display: 'Rubik', system-ui, sans-serif;
-  --font-body:    'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono:    'JetBrains Mono', monospace;
+  --font-display: var(--font-rubik), 'Rubik', system-ui, sans-serif;
+  --font-body:    var(--font-manrope), 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:    var(--font-jetbrains), 'JetBrains Mono', monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
