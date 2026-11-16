@@ -14,9 +14,10 @@ export const NEVER_SHOW: readonly RegExp[] = [/\$\s?\d/, /\bNEC\b/i, /\bCMR\b/i]
 
 /** Personal details a customer can type into a review; never republished. */
 export const PERSONAL_INFO: readonly RegExp[] = [
-  /\(?\b\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/, // 10-digit phone
-  /\+\d[\d\s().-]{7,}\d/, // +1 / international phone
-  /\b\d{3}[\s.-]\d{4}\b/, // 7-digit phone
+  // Phones, any script's digits (\p{Nd}), any dash (U+2010-2015), dot, slash or space as separator.
+  /(?<!\p{Nd})\(?\p{Nd}{3}\)?[\s.\-‐-―/]*\p{Nd}{3}[\s.\-‐-―/]*\p{Nd}{4}(?!\p{Nd})/u, // 10-digit
+  /\+\p{Nd}[\p{Nd}\s().\-‐-―/]{7,}\p{Nd}/u, // +1 / international
+  /(?<!\p{Nd})\p{Nd}{3}[\s.\-‐-―/]*\p{Nd}{4}(?!\p{Nd})/u, // 7-digit
   /[\w.+-]+@[\w-]+\.[\w.]+/, // email
   /\b[\w.+-]+\s*[([]?\s*at\s*[)\]]?\s*[\w-]+\s*[([]?\s*dot\s*[)\]]?\s*(?:com|net|org|us|co|io|biz|info)\b/i, // "name at domain dot com"
   /https?:\/\/|www\./i, // links
@@ -25,9 +26,29 @@ export const PERSONAL_INFO: readonly RegExp[] = [
   /\b\d+\s+(?:[a-z][a-z.'-]*\s+){1,3}(?:st|street|ave|avenue|rd|road|dr|drive|ln|lane|ct|court|blvd|boulevard|way|pl|place|cir|circle|ter|terrace|pkwy|parkway|hwy|highway|trl|trail)\b/i,
 ]
 
-/** Exactly what the site renders: NFKC, format chars (zero-width etc.) removed, whitespace collapsed, trimmed. */
+const ND = /^\p{Nd}$/u
+
+/** ASCII value of any Unicode decimal digit: Nd digits come in runs of 10 starting at 0. */
+function asciiDigit(d: string): string {
+  const cp = d.codePointAt(0) as number
+  let k = 0
+  while (ND.test(String.fromCodePoint(cp - k - 1))) k++
+  return String(k % 10)
+}
+
+/**
+ * Exactly what the site renders (every caller shows the normalised string):
+ * NFKC -> strip default-ignorables (format chars, bidi overrides/isolates,
+ * variation selectors, zero-width) -> every decimal digit to ASCII ->
+ * collapse whitespace -> trim. After this the \d patterns see every digit.
+ */
 export function normalizeReviewField(s: string): string {
-  return s.normalize('NFKC').replace(/\p{Cf}/gu, '').replace(/\s+/g, ' ').trim()
+  return s
+    .normalize('NFKC')
+    .replace(/\p{Default_Ignorable_Code_Point}/gu, '')
+    .replace(/\p{Nd}/gu, asciiDigit)
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 /** True when a live feed review may be shown on the site (text AND author checked, normalised). */

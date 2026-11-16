@@ -20,6 +20,32 @@ test('phones are hidden: 10-digit, 7-digit, +1, international', () => {
     assert.equal(ok(t), false, t)
 })
 
+test('phones are hidden with Unicode digits and separators', () => {
+  for (const t of [
+    'call 919‐555‐1212', // U+2010 hyphen
+    'call 919—555—1212', // em dash
+    'call 919/555/1212',
+    'call ٩١٩-٥٥٥-١٢١٢', // Arabic-Indic digits
+    'text 5551212',
+    'text ５５５–１２１２', // full-width (NFKC) + en dash
+  ]) assert.equal(ok(t), false, t)
+})
+
+test('normaliser: Arabic-Indic / full-width digits to ASCII, bidi + zero-width stripped', () => {
+  assert.equal(normalizeReviewField('٩١٩ ５５５ ۱۲'), '919 555 12')
+  assert.equal(ok('call ٩١٩٥٥٥١٢١٢'), false) // Arabic-Indic phone
+  assert.equal(ok('call ９１９５５５１２１２'), false) // full-width phone
+  assert.equal(ok('call ‮919-555-1212‬'), false) // bidi override wrapped
+  assert.equal(ok('call ⁧919⁩-555-1212'), false) // bidi isolate
+  assert.equal(ok('call 9​1‌9 5‍55 1⁠2️12'), false) // zero-width + variation selector split
+  assert.equal(normalizeReviewField('Gr​eat‮ work'), 'Great work')
+})
+
+test('full reviews keep ordinary numbers (7-digits-total rule is quote-only)', () => {
+  for (const t of ['In business 20 years, done in 2 days, 3 crews, 16x20 deck, 10/10.', 'Finished 2 weeks early in May 2025, 5 stars.'])
+    assert.equal(ok(t), true, t)
+})
+
 test('emails are hidden, including obfuscated ones', () => {
   for (const t of ['email bob@example.com', 'write to bob at gmail dot com', 'bob [at] gmail [dot] net', 'bob(at)yahoo(dot)org'])
     assert.equal(ok(t), false, t)
