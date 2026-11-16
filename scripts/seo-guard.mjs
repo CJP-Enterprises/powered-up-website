@@ -47,6 +47,8 @@ const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')) } cat
 const routes = readJson(join(NEXT, 'routes-manifest.json')) || {}
 const prerender = readJson(join(NEXT, 'prerender-manifest.json')) || { routes: {}, dynamicRoutes: {} }
 const vercelJson = readJson(join(ROOT, 'vercel.json')) || {}
+// Vercel system env on every build (preview too): the project's production domain, no scheme.
+const PROD_HOST = (process.env.VERCEL_PROJECT_PRODUCTION_URL || '').replace(/^https?:\/\//, '').replace(/\/.*$/, '') || null
 
 // ---------- path helpers ----------
 const norm = (p) => {
@@ -165,14 +167,18 @@ async function checkRemoved() {
   const fresh = localSitemap()
   if (!fresh) { warnings.push('no static sitemap.xml in this build output; removed-page check skipped'); return }
   if (!fresh.length) { warnings.push('the new sitemap is empty; removed-page check skipped'); return }
-  const origin = new URL(fresh[0]).origin
+  // Some sites build their sitemap from VERCEL_URL on previews (a *.vercel.app origin behind
+  // deployment protection): compare against the production domain Vercel gives every build.
+  let origin = new URL(fresh[0]).origin
+  if (/\.vercel\.app$/i.test(new URL(origin).hostname) && PROD_HOST) origin = `https://${PROD_HOST}`
   const baseline = process.env.SEO_GUARD_BASELINE || `${origin}/sitemap.xml`
   let live
   try { live = await liveUrls(baseline) } catch (e) {
     warnings.push(`could not read the live sitemap ${baseline} (${e.message}); removed-page check skipped`)
     return
   }
-  const host = new URL(origin).hostname.replace(/^www\./, '')
+  // Paths are compared; the host only filters out other domains' URLs in the live sitemap.
+  const host = new URL(baseline).hostname.replace(/^www\./, '')
   const freshPaths = new Set(fresh.map(pathOf).filter(Boolean))
   let compared = 0
   for (const u of live) {
@@ -206,6 +212,7 @@ function checkLinks() {
   const fresh = localSitemap() || []
   const hosts = new Set()
   for (const u of fresh) { try { const h = new URL(u).hostname.replace(/^www\./, ''); hosts.add(h) } catch { /* skip */ } }
+  if (PROD_HOST) hosts.add(PROD_HOST.replace(/^www\./, ''))
   const broken = new Map() // path -> Set(pages)
   let pages = 0, links = 0
   for (const base of [join(NEXT, 'server', 'app'), join(NEXT, 'server', 'pages')]) {
