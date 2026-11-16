@@ -12,12 +12,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified: lastModified("app/page.tsx", "lib/services.ts", "lib/towns.ts") },
     { url: `${SITE_URL}/services`, lastModified: lastModified("app/services/page.tsx", "lib/services.ts") },
+    { url: `${SITE_URL}/service-areas`, lastModified: lastModified("app/service-areas/page.tsx", "lib/towns.ts") },
     { url: `${SITE_URL}/gallery`, lastModified: lastModified("app/gallery/page.tsx") },
     { url: `${SITE_URL}/blog`, lastModified: lastModified("app/blog/page.tsx", "content/blog") },
     { url: `${SITE_URL}/card`, lastModified: lastModified("public/card.html") },
     { url: `${SITE_URL}/contact`, lastModified: lastModified("app/contact/page.tsx") },
     { url: `${SITE_URL}/privacy`, lastModified: lastModified("app/privacy/page.tsx") },
     { url: `${SITE_URL}/terms`, lastModified: lastModified("app/terms/page.tsx") },
+    { url: `${SITE_URL}/sitemap`, lastModified: lastModified("app/sitemap/page.tsx", "lib/services.ts", "lib/towns.ts", "content/blog") },
   ];
 
   // Each service and town has its own page.tsx under app/, rendered from lib/services.ts / lib/towns.ts.

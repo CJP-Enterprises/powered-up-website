@@ -1,5 +1,6 @@
 import Link from "next/link";
 import QualifyForm from "@/components/QualifyForm";
+import RatingNote from "@/components/RatingNote";
 import ScrollReveal from "@/components/cjp-visual/ScrollReveal/ScrollReveal";
 import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical";
 import { services } from "@/lib/services";
@@ -429,6 +430,7 @@ export default async function Home() {
               <Phone />
               (508) 622-5919
             </a>
+            <RatingNote className="basis-full" />
           </div>
           <div className="hero-meta">
             <div className="hero-meta-item">

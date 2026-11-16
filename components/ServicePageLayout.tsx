@@ -1,5 +1,8 @@
 import Link from "next/link";
 import QualifyForm from "@/components/QualifyForm";
+import RatingNote from "@/components/RatingNote";
+import FormAside from "@/components/FormAside";
+import { RecentProjects, RelatedServices } from "@/components/ServiceExtras";
 import { towns } from "@/lib/towns";
 
 const SITE_URL = "https://www.poweredbymicah.com";
@@ -122,6 +125,7 @@ export default function ServicePageLayout({
               <Phone />
               (508) 622-5919
             </a>
+            <RatingNote className="basis-full" />
           </div>
         </div>
       </section>
@@ -130,6 +134,7 @@ export default function ServicePageLayout({
       <section id="book" className="qualify">
         <div className="wrap">
           <QualifyForm defaultService={serviceValue} />
+          <FormAside />
         </div>
       </section>
 
@@ -183,6 +188,10 @@ export default function ServicePageLayout({
           </div>
         </div>
       </section>
+
+      <RecentProjects service={slug} exclude={[heroPhoto]} />
+
+      <RelatedServices slug={slug} />
 
       {/* WHERE WE WORK */}
       <section id="area" className="area">

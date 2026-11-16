@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import QualifyForm from "@/components/QualifyForm";
+import FormAside from "@/components/FormAside";
 
 export const metadata: Metadata = {
   title: { absolute: "Book a Call | Powered Up LLC | Taunton, MA Electrician" },
@@ -27,6 +28,7 @@ export default function ContactPage() {
       <section id="book" className="qualify">
         <div className="wrap">
           <QualifyForm />
+          <FormAside />
         </div>
       </section>
     </>
