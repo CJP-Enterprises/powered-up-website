@@ -16,14 +16,16 @@ export const NEVER_SHOW: readonly RegExp[] = [/\$\s?\d/, /\bNEC\b/i, /\bCMR\b/i]
 export const PERSONAL_INFO: readonly RegExp[] = [
   // Phones, any script's digits (\p{Nd}), any dash (U+2010-2015), dot, slash or space as separator.
   /(?<!\p{Nd})\(?\p{Nd}{3}\)?[\s.\-‐-―/]*\p{Nd}{3}[\s.\-‐-―/]*\p{Nd}{4}(?!\p{Nd})/u, // 10-digit
-  /\+\p{Nd}[\p{Nd}\s().\-‐-―/]{7,}\p{Nd}/u, // +1 / international
+  /\+\p{Nd}[\p{Nd}\s().\-‐-―/]{7,30}\p{Nd}/u, // +1 / international
   /(?<!\p{Nd})\p{Nd}{3}[\s.\-‐-―/]*\p{Nd}{4}(?!\p{Nd})/u, // 7-digit
-  /[\w.+-]+@[\w-]+\.[\w.]+/, // email
-  /\b[\w.+-]+\s*[([]?\s*at\s*[)\]]?\s*[\w-]+\s*[([]?\s*dot\s*[)\]]?\s*(?:com|net|org|us|co|io|biz|info)\b/i, // "name at domain dot com"
+  /[\w.+-]{1,64}@[\w-]{1,64}\.[\w.]{1,64}/, // email
+  // "name at domain dot com": every part bounded, and at/dot must sit between whitespace or a bracket,
+  // so no two adjacent quantifiers can match the same characters (no catastrophic backtracking).
+  /\b[\w.+-]{1,64}(?:\s{1,3}|\s{0,3}[([]\s{0,3})at(?:\s{1,3}|\s{0,3}[)\]]\s{0,3})[\w-]{1,64}(?:\s{1,3}|\s{0,3}[([]\s{0,3})dot(?:\s{1,3}|\s{0,3}[)\]]\s{0,3})(?:com|net|org|us|co|io|biz|info)\b/i,
   /https?:\/\/|www\./i, // links
-  /\b[a-z0-9][a-z0-9-]*\.(?:com|net|org|us|co|io|biz|info)\b/i, // bare domain
+  /\b[a-z0-9][a-z0-9-]{0,62}\.(?:com|net|org|us|co|io|biz|info)\b/i, // bare domain
   // street address: house number (1+ digits) + 1-3 words + suffix, abbreviated or full
-  /\b\d+\s+(?:[a-z][a-z.'-]*\s+){1,3}(?:st|street|ave|avenue|rd|road|dr|drive|ln|lane|ct|court|blvd|boulevard|way|pl|place|cir|circle|ter|terrace|pkwy|parkway|hwy|highway|trl|trail)\b/i,
+  /\b\d{1,6}\s{1,3}(?:[a-z][a-z.'-]{0,40}\s{1,3}){1,3}(?:st|street|ave|avenue|rd|road|dr|drive|ln|lane|ct|court|blvd|boulevard|way|pl|place|cir|circle|ter|terrace|pkwy|parkway|hwy|highway|trl|trail)\b/i,
 ]
 
 const ND = /^\p{Nd}$/u
@@ -51,14 +53,23 @@ export function normalizeReviewField(s: string): string {
     .trim()
 }
 
+/** Longest field the patterns ever run on; a longer review is simply not shown. */
+export const MAX_REVIEW_CHARS = 2000
+
 /** True when a live feed review may be shown on the site (text AND author checked, normalised). */
 export function isShowableLiveReview(
   r: { text: string; author: string },
   neverShow: readonly RegExp[] = NEVER_SHOW,
 ): boolean {
+  if (r.text.length > MAX_REVIEW_CHARS * 4 || r.author.length > MAX_REVIEW_CHARS * 4) return false
   return ![r.text, r.author]
     .map(normalizeReviewField)
-    .some((f) => neverShow.some((re) => re.test(f)) || PERSONAL_INFO.some((re) => re.test(f)))
+    .some(
+      (f) =>
+        f.length > MAX_REVIEW_CHARS ||
+        neverShow.some((re) => re.test(f)) ||
+        PERSONAL_INFO.some((re) => re.test(f)),
+    )
 }
 
 /**
