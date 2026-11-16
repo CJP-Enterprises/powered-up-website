@@ -99,3 +99,26 @@ test('quote: other-script digits and 7+ digits in total (separators removed) fai
   assert.equal(isQuotableLiveReview({ text: 'call 9.1.9.5.5.5.1', author: 'A B.' }), false) // 7 digits, dotted
   assert.equal(isQuotableLiveReview({ text: '5 stars, 10/10, 2 weeks.', author: 'A B.' }), true) // 5 digits total
 })
+
+test('no catastrophic backtracking: adversarial inputs finish fast; >2000 chars is not shown', () => {
+  const evil = [
+    'a'.repeat(1990) + ' at ',
+    'a at '.repeat(399),
+    ('x ' + 'at '.repeat(5) + 'b ' + 'dot '.repeat(5)).repeat(40).slice(0, 1999),
+    '1 ' + 'a '.repeat(995),
+    'a'.repeat(1999) + '@',
+    '+' + '1 '.repeat(999),
+    'a-'.repeat(999) + '.',
+  ]
+  for (const s of evil) {
+    const t0 = performance.now()
+    isShowableLiveReview({ text: s, author: 'A B.' })
+    isQuotableLiveReview({ text: s, author: 'A B.' })
+    assert.ok(performance.now() - t0 < 50, `slow on ${s.slice(0, 20)}...`)
+  }
+  const long = 'a at '.repeat(1000) // 5,000 chars
+  const t0 = performance.now()
+  assert.equal(isShowableLiveReview({ text: long, author: 'A B.' }), false)
+  assert.ok(performance.now() - t0 < 50)
+  assert.equal(ok('Great work. '.repeat(170)), false) // 2,040 chars: over the cap
+})
