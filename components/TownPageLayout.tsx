@@ -1,5 +1,7 @@
 import Link from "next/link";
 import QualifyForm from "@/components/QualifyForm";
+import RatingNote from "@/components/RatingNote";
+import FormAside from "@/components/FormAside";
 import { services } from "@/lib/services";
 
 const SITE_URL = "https://www.poweredbymicah.com";
@@ -126,6 +128,7 @@ export default function TownPageLayout({
               <Phone />
               (508) 622-5919
             </a>
+            <RatingNote className="basis-full" />
           </div>
         </div>
       </section>
@@ -134,6 +137,7 @@ export default function TownPageLayout({
       <section id="book" className="qualify">
         <div className="wrap">
           <QualifyForm defaultTown={townName} />
+          <FormAside />
         </div>
       </section>
 

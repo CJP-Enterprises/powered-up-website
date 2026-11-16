@@ -21,6 +21,8 @@ export default function Footer() {
               <li><Link href="/#services">EV Chargers</Link></li>
               <li><Link href="/#services">New Construction</Link></li>
               <li><Link href="/#services">Remodels</Link></li>
+              <li><Link href="/services">All Services</Link></li>
+              <li><Link href="/service-areas">Service Areas</Link></li>
             </ul>
           </div>
           <div className="footer-col">
@@ -45,7 +47,7 @@ export default function Footer() {
         <div className="footer-bottom">
           <span>
             © 2024 Powered Up LLC · All Rights Reserved · <Link href="/privacy">Privacy</Link> ·{" "}
-            <Link href="/terms">Terms</Link>
+            <Link href="/terms">Terms</Link> · <Link href="/sitemap">Sitemap</Link>
           </span>
           <span>Built with care in Massachusetts</span>
         </div>
