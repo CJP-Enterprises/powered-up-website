@@ -1,5 +1,6 @@
-import { getGoogleRating, PLACE_ID } from "@/lib/googleRating";
+import { getGoogleRating, PLACE_ID, isQuotableLiveReview } from "@/lib/googleRating";
 import { getLiveReviews } from "@/lib/liveReviews";
+import { normalizeReviewField } from './showableReview';
 
 /**
  * Live Google rating + the newest short review quote, beside the hero call
@@ -44,9 +45,10 @@ export async function getRatingNote(): Promise<RatingNoteData | null> {
     getLiveReviews(PLACE_ID, { next: { revalidate: 3600 } }),
   ]);
   if (!rating.live || !rating.rating) return null;
-  const newest = [...live]
+  const newest = live
+    .filter((r) => isQuotableLiveReview(r))
     .sort((a, b) => time(b.date) - time(a.date))
-    .map((r) => ({ text: shortQuote(r.text), author: r.author }))
+    .map((r) => ({ text: shortQuote(normalizeReviewField(r.text)), author: normalizeReviewField(r.author) }))
     .find((q) => !OFF_LIMITS.test(q.text));
   return {
     rating: rating.rating,

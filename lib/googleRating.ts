@@ -38,3 +38,6 @@ export async function getGoogleRating(): Promise<GoogleRating> {
   } catch {}
   return { ...FALLBACK, reviewUrl, mapsUrl, live: false };
 }
+
+// Live-review hide filter (wave 3 security fix, mission-decks#38): one source for every live-review surface.
+export { NEVER_SHOW, isShowableLiveReview, isQuotableLiveReview } from './showableReview';
