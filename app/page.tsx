@@ -6,6 +6,7 @@ import electrical from "@/components/cjp-visual/ScrollReveal/presets/electrical"
 import { services } from "@/lib/services";
 import GoogleReviewsBand from "@/components/GoogleReviewsBand";
 import { getGoogleRating, isShowableLiveReview, PLACE_ID } from "@/lib/googleRating";
+import { normalizeReviewField } from "@/lib/showableReview";
 import { getLiveReviews, mergeReviews } from "@/lib/liveReviews";
 import { rimg } from "@/lib/responsive-img";
 
@@ -383,7 +384,7 @@ export default async function Home() {
     {
       text: (r) => r.body,
       author: (r) => r.name,
-      from: (l) => ({ name: l.author, source: "Google Review", body: `“${l.text}”` }),
+      from: (l) => ({ name: normalizeReviewField(l.author), source: "Google Review", body: `“${normalizeReviewField(l.text)}”` }),
       placement: "end",
     },
   );
