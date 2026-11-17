@@ -128,6 +128,9 @@ export default function TownPageLayout({
               <Phone />
               (508) 622-5919
             </a>
+            <a href="sms:+15086225919" className="btn btn-ghost">
+              Text us
+            </a>
             <RatingNote className="basis-full" />
           </div>
         </div>

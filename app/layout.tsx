@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Brygada_1918, JetBrains_Mono, Manrope, Rubik } from "next/font/google";
+import WebVitals from "@/components/WebVitals";
 import Script from "next/script";
 import "./globals.css";
 import TopBar from "@/components/TopBar";
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AttributionScript />
         <LeadTracking />
+        <WebVitals />
         <GoogleAnalytics />
         <TopBar />
         <Nav />

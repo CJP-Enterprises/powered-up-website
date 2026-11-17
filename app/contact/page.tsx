@@ -20,7 +20,8 @@ export default function ContactPage() {
           </h1>
           <p>
             Fill in the quick form, then pick a time on Micah&apos;s calendar. Prefer to call? Reach
-            him direct at <a href="tel:+15086225919">(508) 622-5919</a>.
+            him direct at <a href="tel:+15086225919">(508) 622-5919</a>, or{" "}
+            <a href="sms:+15086225919">text him</a>.
           </p>
         </div>
       </section>

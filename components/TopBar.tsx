@@ -12,6 +12,8 @@ export default function TopBar() {
         <div>
           <a href="tel:+15086225919">(508) 622-5919</a>
           <span className="dot">·</span>
+          <a href="sms:+15086225919">Text us</a>
+          <span className="dot">·</span>
           <span>Mon–Sat · 7am–7pm</span>
         </div>
       </div>

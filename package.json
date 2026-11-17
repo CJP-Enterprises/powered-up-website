@@ -7,7 +7,7 @@
     "dev": "next dev",
     "prebuild": "node scripts/build-image-variants.mjs",
     "build": "next build",
-    "postbuild": "node scripts/seo-guard.mjs",
+    "postbuild": "node scripts/seo-guard.mjs && node scripts/check-jsonld.mjs",
     "start": "next start",
     "lint": "next lint"
   },

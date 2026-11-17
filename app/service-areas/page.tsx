@@ -42,6 +42,9 @@ export default function ServiceAreasPage() {
             <a href="tel:+15086225919" className="btn btn-primary">
               Call (508) 622-5919
             </a>
+            <a href="sms:+15086225919" className="btn btn-ghost">
+              Text us
+            </a>
           </div>
           <p className="sub-section" style={{ marginTop: 28 }}>
             See <Link href="/services">every service</Link> Micah handles in these towns.

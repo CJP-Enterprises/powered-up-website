@@ -125,6 +125,9 @@ export default function ServicePageLayout({
               <Phone />
               (508) 622-5919
             </a>
+            <a href="sms:+15086225919" className="btn btn-ghost">
+              Text us
+            </a>
             <RatingNote className="basis-full" />
           </div>
         </div>
@@ -208,6 +211,9 @@ export default function ServicePageLayout({
                 Call (508) 622-5919
                 <Phone />
               </a>
+              <a href="sms:+15086225919" className="btn btn-ghost" style={{ marginLeft: 10 }}>
+                Text us
+              </a>
             </div>
           </div>
 
@@ -229,6 +235,9 @@ export default function ServicePageLayout({
             <a href="tel:+15086225919" className="btn btn-primary">
               Call (508) 622-5919
               <Phone w="2.5" />
+            </a>
+            <a href="sms:+15086225919" className="btn btn-ghost">
+              Text us
             </a>
           </div>
         </div>
