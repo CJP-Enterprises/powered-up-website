@@ -1071,7 +1071,8 @@ section { padding: 110px 0; }
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(15, 26, 46, 0.6);
+  /* 0.6 measured 4.39:1 on the cream card (axe, SEO wave 5); 0.66 clears 4.5:1. */
+  color: rgba(15, 26, 46, 0.66);
   margin-bottom: 8px;
 }
 .qualify-row input,
@@ -1826,3 +1827,41 @@ footer {
   letter-spacing: normal;
   font-size: 1.08em;
 }
+
+/* "Text us" in the nav (SEO wave 5): outline beside the yellow Call button. */
+.nav-text {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  color: var(--cream);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: all 0.2s;
+}
+.nav-text:hover { background: var(--cream); color: var(--navy-deep); }
+@media (max-width: 920px) {
+  .nav-text { display: none; }
+}
+
+/* "How did you hear about us?" on the booking step (SEO wave 5). */
+.qualify-heard { margin-top: 24px; color: var(--navy-deep); }
+.qualify-heard-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--navy-deep);
+  background: transparent;
+  color: var(--navy-deep);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.qualify-heard-btn:hover { background: var(--navy-deep); color: var(--cream); }
+.qualify-heard-btn:disabled { opacity: 0.5; }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import HeardAbout, { rememberHeardAboutToken } from "@/components/HeardAbout";
 import { trackLead } from "@/lib/analytics";
 import { getAttribution } from "@/lib/attribution";
 
@@ -115,7 +116,9 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const result = (await res.json().catch(() => ({}))) as { lead?: boolean };
+      const result = (await res.json().catch(() => ({}))) as { lead?: boolean; ha?: string };
+      // Sealed token for the optional "How did you hear about us?" on step 3.
+      rememberHeardAboutToken(result.ha);
 
       // GA4 key event, once, only when the route delivered the lead
       // (lead:true). A failed send or a spam-screened { ok: true } is not a lead.
@@ -215,6 +218,8 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
           type="text"
           name="website"
           className="qualify-hp"
+          aria-hidden="true"
+          aria-label="Leave this field empty"
           tabIndex={-1}
           autoComplete="off"
           value={website}
@@ -330,9 +335,16 @@ export default function QualifyForm({ defaultService, defaultTown }: QualifyForm
             style={{ color: "var(--navy-deep)", fontWeight: 700, textDecoration: "underline" }}
           >
             (508) 622-5919
+          </a>{" "}
+          or{" "}
+          <a href="sms:+15086225919" style={{ color: "var(--navy-deep)", fontWeight: 700, textDecoration: "underline" }}>
+            text him
           </a>
           .
         </p>
+        {step === 3 && (
+          <HeardAbout className="qualify-heard" buttonClassName="qualify-heard-btn" />
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { screenLead } from "@/lib/leadGuard";
-import { notifySignal } from "@/lib/signal";
+import { notifySignalDetailed } from "@/lib/signal";
+import { tokenForCrmAnswer } from "@/lib/heardAbout";
 import { attributionLine, attributionLineHtml, sanitizeAttribution, type Attribution } from "@/lib/attribution";
 import { checkTestLead, TEST_SUBJECT_PREFIX } from "@/lib/testLead";
 
@@ -225,10 +226,13 @@ export async function POST(req: Request) {
       );
     }
 
-    await notifySignal({ name: String(name ?? ""), email: String(email ?? ""), phone: phone ? String(phone) : undefined, message: notes ? String(notes) : undefined, attribution, test: test.isTest });
-    if (test.isTest) return Response.json({ ok: true, test: true });
+    const { data: crm } = await notifySignalDetailed({ name: String(name ?? ""), email: String(email ?? ""), phone: phone ? String(phone) : undefined, message: notes ? String(notes) : undefined, attribution, test: test.isTest });
+    // "How did you hear about us?" (SEO wave 5): only a lead THIS request created
+    // is sealed into a 2-hour token (lib/heardAbout.ts). Never the id itself.
+    const ha = tokenForCrmAnswer(crm);
+    if (test.isTest) return Response.json({ ok: true, test: true, ...(ha ? { ha } : {}) });
     // lead:true is the only flag that lets the form fire generate_lead.
-    return Response.json({ ok: true, lead: true });
+    return Response.json({ ok: true, lead: true, ...(ha ? { ha } : {}) });
   } catch (err) {
     console.error("Quote handler error:", err);
     return Response.json(

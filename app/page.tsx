@@ -431,6 +431,9 @@ export default async function Home() {
               <Phone />
               (508) 622-5919
             </a>
+            <a href="sms:+15086225919" className="btn btn-ghost">
+              Text us
+            </a>
             <RatingNote className="basis-full" />
           </div>
           <div className="hero-meta">
@@ -656,6 +659,9 @@ export default async function Home() {
                 Call (508) 622-5919
                 <Phone />
               </a>
+              <a href="sms:+15086225919" className="btn btn-ghost" style={{ marginLeft: 10 }}>
+                Text us
+              </a>
             </div>
           </div>
 
@@ -677,6 +683,9 @@ export default async function Home() {
             <a href="tel:+15086225919" className="btn btn-primary">
               Call (508) 622-5919
               <Phone w="2.5" />
+            </a>
+            <a href="sms:+15086225919" className="btn btn-ghost">
+              Text us
             </a>
           </div>
         </div>
@@ -787,6 +796,17 @@ export default async function Home() {
                 </span>
                 <span className="contact-info-text">
                   <span className="contact-info-lbl">Direct Line</span>
+                  <span className="contact-info-val">(508) 622-5919</span>
+                </span>
+              </a>
+              <a href="sms:+15086225919" className="contact-info-row">
+                <span className="contact-info-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </span>
+                <span className="contact-info-text">
+                  <span className="contact-info-lbl">Text</span>
                   <span className="contact-info-val">(508) 622-5919</span>
                 </span>
               </a>

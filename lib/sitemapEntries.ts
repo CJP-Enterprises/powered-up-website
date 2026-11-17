@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/contact`, lastModified: lastModified("app/contact/page.tsx") },
     { url: `${SITE_URL}/privacy`, lastModified: lastModified("app/privacy/page.tsx") },
     { url: `${SITE_URL}/terms`, lastModified: lastModified("app/terms/page.tsx") },
+    { url: `${SITE_URL}/accessibility`, lastModified: lastModified("app/accessibility/page.tsx") },
     { url: `${SITE_URL}/sitemap`, lastModified: lastModified("app/sitemap/page.tsx", "lib/services.ts", "lib/towns.ts", "content/blog") },
   ];
 

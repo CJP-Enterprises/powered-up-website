@@ -79,6 +79,9 @@ export default function Nav() {
         </ul>
 
         <div className="nav-right">
+          <a href="sms:+15086225919" className="nav-text">
+            Text us
+          </a>
           <a href="tel:+15086225919" className="nav-cta">
             <PhoneIcon />
             Call (508) 622-5919
@@ -141,6 +144,9 @@ export default function Nav() {
         <a href="tel:+15086225919" className="mobile-menu-cta" onClick={() => setOpen(false)}>
           <PhoneIcon />
           Call (508) 622-5919
+        </a>
+        <a href="sms:+15086225919" className="mobile-menu-cta" onClick={() => setOpen(false)}>
+          Text us at (508) 622-5919
         </a>
       </div>
     </nav>

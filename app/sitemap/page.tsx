@@ -73,6 +73,7 @@ export default function SitemapPage() {
             items={[
               { href: "/privacy", label: "Privacy" },
               { href: "/terms", label: "Terms" },
+              { href: "/accessibility", label: "Accessibility" },
             ]}
           />
         </div>

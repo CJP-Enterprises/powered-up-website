@@ -11,10 +11,22 @@ import type { Attribution } from "./attribution";
 export interface SignalLead { name: string; email: string; phone?: string; service?: string; message?: string; page?: string; renderedAt?: number; attribution?: Attribution; test?: boolean }
 
 export async function notifySignal(lead: SignalLead): Promise<"SENT" | "NOT_CONFIGURED" | "FAILED"> {
+  return (await notifySignalDetailed(lead)).outcome;
+}
+
+/** What the keyed ingest answered (cjp-crm #217/#219). */
+export type SignalAnswer = { ok?: boolean; lead_id?: string; created?: boolean; duplicate?: boolean; filtered?: boolean; test?: boolean };
+
+/**
+ * Same call, plus the parsed ingest answer (SEO wave 5): `lead_id` comes back
+ * only to a keyed caller and feeds the "How did you hear about us?" token
+ * (lib/heardAbout.ts tokenForCrmAnswer). `data` is null unless 2xx.
+ */
+export async function notifySignalDetailed(lead: SignalLead): Promise<{ outcome: "SENT" | "NOT_CONFIGURED" | "FAILED"; data: SignalAnswer | null }> {
   const url = process.env.CJP_SIGNAL_INGEST_URL;
   const slug = process.env.CJP_SIGNAL_CLIENT_SLUG;
   const site = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!url || !slug || !site) return "NOT_CONFIGURED";
+  if (!url || !slug || !site) return { outcome: "NOT_CONFIGURED", data: null };
   const origin = new URL(site).origin;
   const dedupeKey = createHash("sha256").update([lead.email, lead.phone ?? "", String(lead.renderedAt ?? ""), lead.message ?? ""].join("|")).digest("hex").slice(0, 32);
   try {
@@ -24,8 +36,10 @@ export async function notifySignal(lead: SignalLead): Promise<"SENT" | "NOT_CONF
       body: JSON.stringify({ type: "lead", slug, name: lead.name, email: lead.email, phone: lead.phone || undefined, service: lead.service || undefined, message: lead.message || undefined, source: "website_form", dedupeKey, form_location: "quote-form", source_path: lead.page || undefined, site_url: origin, attribution: lead.attribution ?? null, ...(lead.test ? { test: true } : {}) }),
       signal: AbortSignal.timeout(4000),
     });
-    return res.ok ? "SENT" : "FAILED";
+    if (!res.ok) return { outcome: "FAILED", data: null };
+    const data = (await res.json().catch(() => ({}))) as SignalAnswer;
+    return { outcome: "SENT", data };
   } catch {
-    return "FAILED";
+    return { outcome: "FAILED", data: null };
   }
 }
